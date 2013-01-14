@@ -1,0 +1,13 @@
+@(contacts : List[String])
+
+<ul class="nav nav-pills nav-stacked">
+<li class="nav-header">Contacts</li>
+
+<div class="input-append">
+<input id="appendedInputButton" type="text" style="width:175px">
+<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
+</div>
+
+<!--<li class="active"><a href="#"></a></li>-->
+	@contacts.map { x => <li><a href="#">@x</a></li> }
+</ul>
