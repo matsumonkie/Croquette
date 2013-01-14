@@ -72,10 +72,10 @@ public class GoogleAuth extends Controller {
 	 */
 	public static Optional<UUID> getUserUUID() {
 		String userUUID = session("userUUID");
-		if (!userUUID.isEmpty()) {
-			return Optional.of(UUID.fromString(userUUID));
-		} else {
+		if (userUUID == null || userUUID.isEmpty()) {
 			return Optional.absent();
+		} else {
+			return Optional.of(UUID.fromString(userUUID));
 		}
 	}
 
