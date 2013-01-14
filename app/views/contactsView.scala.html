@@ -1,4 +1,4 @@
-@(contacts : List[String])
+@(contacts : Collection[models.Contact])
 
 <ul class="nav nav-pills nav-stacked">
 <li class="nav-header">Contacts</li>
@@ -9,5 +9,14 @@
 </div>
 
 <!--<li class="active"><a href="#"></a></li>-->
-	@contacts.map { x => <li><a href="#">@x</a></li> }
+	@contacts.map {	contact => @contact.getPhoneNumbers().map { x => 
+						<li>@contact.getName() @x </li> }
+	}
+	
+			
+	
+	
+	
+	
+	<!--<li><a href="#">name + num</a></li>--> 
 </ul>

@@ -16,7 +16,9 @@ object ApplicationBuild extends Build {
 	//for XMPP
     "jivesoftware" % "smack" % "3.0.4",
 	//to retrieve contact from google
-	"com.google.gdata" % "core" % "1.47.1"
+	"com.google.gdata" % "core" % "1.47.1",
+	//to capitalize name
+	"commons-lang" % "commons-lang" % "2.5"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

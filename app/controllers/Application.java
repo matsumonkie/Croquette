@@ -1,10 +1,10 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
-import models.GoogleContacts;
+import models.Contact;
+import models.Contacts;
 import models.UserEmail;
 
 import org.codehaus.jackson.JsonNode;
@@ -13,23 +13,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Callback0;
-import play.libs.F.Promise;
-import play.libs.WS.Response;
 import play.libs.Json;
-import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import views.html.mainView;
 
 import com.google.common.base.Optional;
-import com.google.gdata.data.contacts.ContactEntry;
 
 public class Application extends Controller {
-
-	public static void p(String str) {
-		System.out.println(str);
-	}
 
 	public static Result test() {
 		Logger.info(">>>start");
@@ -39,8 +31,8 @@ public class Application extends Controller {
 	}
 
 	public static Result index() {
-		// Message.sendMessage();
 		Optional<UUID> userUUID = GoogleAuth.getUserUUID();
+
 		if (userUUID.isPresent()) {
 			Optional<String> accessToken = Sessions.getUserToken(userUUID.get());
 
@@ -49,8 +41,8 @@ public class Application extends Controller {
 				String userEmail = email.getUserEmailAddress(accessToken.get());
 
 				Contacts contacts = new Contacts(accessToken.get());
-				List<String> names = contacts.getContacts();
-				return ok(mainView.render("test", names));
+				Collection<Contact> names = contacts.getContacts();
+				return ok(mainView.render("main", names));
 			}
 		}
 		return ok("error");

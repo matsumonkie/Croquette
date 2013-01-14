@@ -70,8 +70,8 @@ public class GoogleContacts {
 			myQuery.setMaxResults(1000);
 			ContactFeed resultFeed = contactsService.query(myQuery, ContactFeed.class);
 			List<ContactEntry> contactEntries = resultFeed.getEntries();
-			dispAllContacts(contactEntries);
 			/*
+			dispAllContacts(contactEntries);
 			ExtensionProfile extensionProfile = contactsService.getExtensionProfile();
 			dispRawXML(resultFeed, extensionProfile);
 			*/
