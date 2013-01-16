@@ -16,12 +16,16 @@ import com.google.common.base.Optional;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+
+/**
+ * authenticate user, get user grant for its info and register user in the application 
+ */
 public class GoogleAuth extends Controller {
 
-	private static Config conf = ConfigFactory.load();
-	private static String CLIENT_ID = conf.getString("google_client_id");
-	private static String CLIENT_SECRET = conf.getString("google_client_secret");
-	private static String REDIRECT_URI = conf.getString("google_redirect_uri");
+	private static final Config conf = ConfigFactory.load();
+	private static final String CLIENT_ID = conf.getString("google_client_id");
+	private static final String CLIENT_SECRET = conf.getString("google_client_secret");
+	private static final String REDIRECT_URI = conf.getString("google_redirect_uri");
 
 	// Infos for user authorization and simple token
 	private static final String AUTH_URL = "https://accounts.google.com/o/oauth2/auth";
@@ -45,39 +49,6 @@ public class GoogleAuth extends Controller {
 	private static final String GRANT_TYPE = "authorization_code";
 
 	private static final String ACCESS_TOKEN_PARAM = "access_token";
-
-	/**
-	 * a user is connected if we have a session with its UUID
-	 */
-	public static boolean isConnected() {
-		return session("userUUID") != null;
-	}
-
-	/**
-	 * create a new random UUID
-	 */
-	private static UUID generateRandomUUID() {
-		return UUID.randomUUID();
-	}
-
-	/**
-	 * save the given uuid to the user session
-	 */
-	public static void saveUUIDToSession(UUID userUUID) {
-		session("userUUID", userUUID.toString());
-	}
-
-	/**
-	 * return the user UUID from the session if it exists
-	 */
-	public static Optional<UUID> getUserUUID() {
-		String userUUID = session("userUUID");
-		if (userUUID == null || userUUID.isEmpty()) {
-			return Optional.absent();
-		} else {
-			return Optional.of(UUID.fromString(userUUID));
-		}
-	}
 
 	/**
 	 * Authenticate user using OAuth 2.0 if user is not already connected if
@@ -106,18 +77,18 @@ public class GoogleAuth extends Controller {
 			// authentification failed, retry authentify
 			return redirect("/authenticate");
 		} else {
-			Optional<UUID> uuid = getUserUUID();
+			Optional<UUID> uuid = User.getUserUUID();
 			// if user is not registered in the application : no uuid yet or no access token
 			if (!uuid.isPresent() || !Sessions.getUserToken(uuid.get()).isPresent()) {
 				// build post request, execute it and retrieve the Json response
 				JsonNode jsonResponse = postAccessTokenRequest(token);
 				accessToken = jsonResponse.findPath(ACCESS_TOKEN_PARAM).asText();
 
-				// generate a uuid and save it to the session
-				UUID userUUID = generateRandomUUID();
-				saveUUIDToSession(userUUID);
+				// generate a uuid and save it to the user session
+				UUID userUUID = User.generateRandomUUID();
+				User.saveUserUUIDToSession(userUUID);
 				// register uuid and access token in the application
-				Sessions.registerUser(userUUID, accessToken);
+				Sessions.registerToken(userUUID, accessToken);
 			}
 			return redirect("/");
 		}
@@ -139,12 +110,5 @@ public class GoogleAuth extends Controller {
 		parameters.append("&" + GRANT_TYPE_PARAM + "=" + GRANT_TYPE);
 
 		return rq.post(parameters.toString()).get().asJson();
-	}
-
-	/**
-	 * disconnect the user by cleaning the whole session
-	 */
-	public static void disconnect() {
-		session().clear();
 	}
 }

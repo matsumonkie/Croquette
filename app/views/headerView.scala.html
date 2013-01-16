@@ -1,9 +1,13 @@
+@(emailAddress: String)
+
 <!-- website name and icon -->
 <div class="span3 offset centered-text">
 	<img src=@routes.Assets.at("img/logo.png")></img>
 </div>
 
 <!-- navigation menu -->
-<div class="span3 offset6 centered-text" style="height: 50px; line-height: 50px;">
-	<button class="btn">matsuhar@@gmail.com <i class="icon-off"></i></button>
+<div class="span3 offset7 centered-text" style="height: 50px; line-height: 50px;">
+	<a href="/sign-off">
+		<button class="btn">@emailAddress<i class="icon-off"></i></button>
+	</a>
 </div>

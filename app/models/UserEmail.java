@@ -2,10 +2,12 @@ package models;
 
 import org.codehaus.jackson.JsonNode;
 
-import play.Logger;
 import play.libs.F.Promise;
 import play.libs.WS;
 import play.libs.WS.Response;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 public class UserEmail {
 
@@ -15,8 +17,16 @@ public class UserEmail {
 	 * return the user email address
 	 */
 	public String getUserEmailAddress(String accessToken) {
+		Preconditions.checkNotNull(accessToken,	"accessToken cannot be null");
+		
 		Promise<Response> promiseResponse = WS.url(USER_EMAIL_URL).setQueryParameter("access_token", accessToken).get();
 		JsonNode jsonResponse = promiseResponse.get().asJson();
-		return jsonResponse.findPath("email").asText();
+		String email = jsonResponse.findPath("email").asText();
+		
+		if (email == null || email.isEmpty()) {
+			throw new RuntimeException("email cannot be null");
+		}
+		
+		return email;
 	}
 }

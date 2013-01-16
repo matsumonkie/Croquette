@@ -1,4 +1,4 @@
-@(title: String, contacts: Collection[models.Contact])
+@(title: String, emailAddress: String, contacts: Collection[models.Contact])
 
 <!DOCTYPE html>
 	<html>
@@ -27,7 +27,7 @@
 
 <div class="ui-layout-west">@contactsView(contacts)</div>
 
-<div class="ui-layout-north">@headerView()</div>
+<div class="ui-layout-north">@headerView(emailAddress)</div>
 <div class="ui-layout-south"><div class="centered-text">Croquette<i>!</i> 2012</div></div>
 
 </body>

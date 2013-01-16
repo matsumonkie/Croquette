@@ -17,9 +17,9 @@ $(document).ready(function () {
     ,	south__maxSize:			45		
 
     //WEST
-    ,	west__size:			300
+    ,	west__size:				350
     ,	west__spacing_open:		8 //west pane has a border 
-    ,	west__spacing_closed:		12
+    ,	west__spacing_closed:	12
     ,	west__resizable:  		true
 
     // INNER-LAYOUT

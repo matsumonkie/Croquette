@@ -31,21 +31,23 @@ public class Application extends Controller {
 	}
 
 	public static Result index() {
-		Optional<UUID> userUUID = GoogleAuth.getUserUUID();
+		Optional<UUID> userUUID = User.getUserUUID();
 
+		// user was on this website earlier 
 		if (userUUID.isPresent()) {
-			Optional<String> accessToken = Sessions.getUserToken(userUUID.get());
-
-			if (accessToken.isPresent()) {
-				UserEmail email = new UserEmail();
-				String userEmail = email.getUserEmailAddress(accessToken.get());
-
-				Contacts contacts = new Contacts(accessToken.get());
-				Collection<Contact> names = contacts.getContacts();
-				return ok(mainView.render("main", names));
+			Logger.info("-> user already logged in");
+			Optional<String> optAccessToken = Sessions.getUserToken(userUUID.get());
+			
+			// user grant access to his contactuserUUID
+			if (optAccessToken.isPresent()) {
+				String accessToken = optAccessToken.get();
+				String emailAddress = registerUserEmailAddress(userUUID.get(), accessToken);
+				Collection<Contact> contacts= new Contacts(accessToken).getContacts();
+				
+				return ok(mainView.render("main", emailAddress, contacts));
 			}
 		}
-		return ok("error");
+		return redirect("/authenticate");
 	}
 
 	public static WebSocket<JsonNode> chat() {
@@ -55,14 +57,14 @@ public class Application extends Controller {
 
 				in.onMessage(new Callback<JsonNode>() {
 					public void invoke(JsonNode event) {
-						Logger.info("new event + " + event);
+						Logger.info(" -> New SMS : " + event);
 						out.write(event);
 					}
 				});
 
 				in.onClose(new Callback0() {
 					public void invoke() {
-						Logger.info("Disconnected");
+						Logger.info(" -> Websocket closed");
 					}
 				});
 			}
@@ -75,5 +77,29 @@ public class Application extends Controller {
 		event.put("content", content);
 
 		out.write(event);
+	}
+
+	/*
+	 * sign off the user by cleaning caches, user sessions 
+	 * and disconnecting user from its gmail account
+	 */
+	public static Result SignOff() {
+		Optional<UUID> userUUID = User.getUserUUID();
+		Sessions.removeUserData(userUUID.get());
+
+		session().clear();
+		
+		Logger.info("-> user logged out");
+		return redirect("/authenticate");
+	}
+	
+	/*
+	 * register the user email address
+	 **/
+	private static String registerUserEmailAddress(UUID userUUID, String accessToken) {
+		UserEmail userEmail = new UserEmail();
+		String emailAddress = userEmail.getUserEmailAddress(accessToken);
+		Sessions.registerEmailAddress(userUUID, emailAddress);
+		return emailAddress;
 	}
 }

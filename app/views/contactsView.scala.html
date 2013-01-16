@@ -10,9 +10,9 @@
 
 <!--<li class="active"><a href="#"></a></li>-->
 	@contacts.map {	contact => @contact.getPhoneNumbers().map { x => 
-						<li>@contact.getName() @x </li> }
-	}
-	
+						<li title="@x"><a>@contact.getName()</a></li> 
+						}
+					}
 			
 	
 	

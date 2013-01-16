@@ -3,13 +3,13 @@
 # ~~~~
 
 # Authenticate and retrieve contacts from google APIs
-GET     /authenticate			controllers.GoogleAuth.authenticate()
-GET     /register_user			controllers.GoogleAuth.registerUser(code: String ?= "")
+GET     /               	controllers.Application.index()
+GET     /authenticate		controllers.GoogleAuth.authenticate()
+GET     /sign-off			controllers.Application.SignOff()
+GET     /register_user		controllers.GoogleAuth.registerUser(code: String ?= "")
+GET     /chat           	controllers.Application.chat()
 
-# Main page
 GET		/test			controllers.Application.test()
-GET     /               controllers.Application.index()
-GET     /chat           controllers.Application.chat()
 
 
 # Map static resources from the /public folder to the /assets URL path
