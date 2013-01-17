@@ -38,6 +38,7 @@ public class GoogleAuth extends Controller {
 
 	private static final String USER_EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
 	private static final String CONTACTS_SCOPE = "https://www.google.com/m8/feeds";
+	private static final String GTALK_SCOPE = "https://www.googleapis.com/auth/googletalk";
 	private static final String RESPONSE_TYPE = "code";
 	private static final String APPROVAL_PROMPT = "auto";
 
@@ -61,7 +62,7 @@ public class GoogleAuth extends Controller {
 		rq.append("?" + RESPONSE_TYPE_PARAM + "=" + RESPONSE_TYPE);
 		rq.append("&" + CLIENT_ID_PARAM + "=" + CLIENT_ID);
 		rq.append("&" + REDIRECT_URI_PARAM + "=" + REDIRECT_URI);
-		rq.append("&" + SCOPE_PARAM + "=" + CONTACTS_SCOPE + "+" + USER_EMAIL_SCOPE);
+		rq.append("&" + SCOPE_PARAM + "=" + CONTACTS_SCOPE + "+" + USER_EMAIL_SCOPE + "+" + GTALK_SCOPE);
 		rq.append("&" + APPROVAL_PROMPT_PARAM + "=" + APPROVAL_PROMPT);
 
 		return redirect(rq.toString());

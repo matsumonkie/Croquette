@@ -38,11 +38,15 @@ public class Application extends Controller {
 			Logger.info("-> user already logged in");
 			Optional<String> optAccessToken = Sessions.getUserToken(userUUID.get());
 			
-			// user grant access to his contactuserUUID
+			// user grant access to his contacts
 			if (optAccessToken.isPresent()) {
 				String accessToken = optAccessToken.get();
-				String emailAddress = registerUserEmailAddress(userUUID.get(), accessToken);
+				
+				String emailAddress = getUserEmailAddress(userUUID.get(), accessToken);
 				Collection<Contact> contacts= new Contacts(accessToken).getContacts();
+				
+				Message msg = new Message(accessToken);
+				msg.login();
 				
 				return ok(mainView.render("main", emailAddress, contacts));
 			}
@@ -94,12 +98,18 @@ public class Application extends Controller {
 	}
 	
 	/*
-	 * register the user email address
+	 * if email address already exists, return it
+	 * otherwise retrieve and register it before returning
 	 **/
-	private static String registerUserEmailAddress(UUID userUUID, String accessToken) {
-		UserEmail userEmail = new UserEmail();
-		String emailAddress = userEmail.getUserEmailAddress(accessToken);
-		Sessions.registerEmailAddress(userUUID, emailAddress);
-		return emailAddress;
+	private static String getUserEmailAddress(UUID userUUID, String accessToken) {
+		Optional<String> optUserEmailAddress = Sessions.getUserEmailAddress(userUUID);
+		if (optUserEmailAddress.isPresent()) {
+			return optUserEmailAddress.get();
+		} else {
+			UserEmail userEmail = new UserEmail();
+			String emailAddress = userEmail.getUserEmailAddress(accessToken);
+			Sessions.registerEmailAddress(userUUID, emailAddress);
+			return emailAddress;	
+		}
 	}
 }
