@@ -26,6 +26,9 @@ public class Contacts {
 
 	private GoogleContacts googleContacts;
 
+	//coucou
+	
+
 	/**
 	 * filter the contact who only have at least a given name
 	 */
