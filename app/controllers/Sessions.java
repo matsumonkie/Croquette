@@ -7,9 +7,8 @@ import java.util.UUID;
 
 import models.Contact;
 import models.Contacts;
+import models.Conversation;
 import play.Logger;
-
-import akka.actor.IO.Cont;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -22,7 +21,7 @@ public class Sessions {
 	private static Map<UUID, String> usersTokens = new HashMap<UUID, String>();
 	private static Map<UUID, String> usersEmailAddresses = new HashMap<UUID, String>();
 	private static Map<UUID, Collection<Contact>> usersContacts = new HashMap<UUID, Collection<Contact>>();
-	private static Map<UUID, Collection<Conversation>> usersConversations = new HashMap<UUID, Collection<Conversation>>();
+	//private static Map<UUID, Collection<Conversation>> usersConversations = new HashMap<UUID, Collection<Conversation>>();
 	
 	// Enregistrement
 	public static void registerToken(UUID userUUID, String accessToken) {
