@@ -24,9 +24,7 @@ import com.google.gdata.data.extensions.PhoneNumber;
  */
 public class Contacts {
 
-	private String accessToken;
 	private GoogleContacts googleContacts;
-	private List<Contact> contacts = new ArrayList<Contact>();
 
 	/**
 	 * filter the contact who only have at least a given name
@@ -102,7 +100,6 @@ public class Contacts {
 	};
 
 	public Contacts(String accessToken) {
-		this.accessToken = accessToken;
 		googleContacts = new GoogleContacts(accessToken);
 	}
 
@@ -123,7 +120,7 @@ public class Contacts {
 
 	private Collection<Contact> castContacts(Collection<ContactEntry> contacts) {
 		Collection<Contact> castedContacts = Collections2.transform(contacts, CREATE_CONTACT);
-		List<Contact> sortedContacts = new ArrayList(castedContacts);
+		List<Contact> sortedContacts = new ArrayList<Contact>(castedContacts);
 		Collections.sort(sortedContacts);
 		return sortedContacts;
 	}
