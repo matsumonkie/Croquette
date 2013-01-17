@@ -1,6 +1,5 @@
 logs
-project/project
-project/target
+project/*
 target
 tmp
 .history
@@ -14,6 +13,4 @@ dist
 /RUNNING_PID
 /.settings
 lib
-project/project
-project/target
 

@@ -2,7 +2,7 @@
 
     $(function() {
         var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
-        var chatSocket = new WS("@routes.Application.chat().webSocketURL()")
+        var chatSocket = new WS("@routes.Application.chat()")
 
         var sendMessage = function() {
             chatSocket.send(JSON.stringify( { content: $("#talk").val() } ))

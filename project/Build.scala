@@ -1,29 +1,27 @@
 import sbt._
 import Keys._
-import play.Project._
+import PlayProject._
 
 object ApplicationBuild extends Build {
-
   val appName         = "Croquette"
   val appVersion      = "1.0-SNAPSHOT"
-
-  val appDependencies = Seq(
-    // Add your project dependencies here,
-	//groupid % artifact % version
-    javaCore,
-    javaJdbc,
-    javaEbean,
+    val appDependencies = Seq(
 	//for XMPP
-//    "jivesoftware" % "smack" % "3.2.1",
     "org.igniterealtime.smack" % "smack" % "3.2.1",
 	//to retrieve contact from google
 	"com.google.gdata" % "core" % "1.47.1",
-	//to capitalize name
-	"commons-lang" % "commons-lang" % "2.5"
-  )
+    //to capitalize name
+    "commons-lang" % "commons-lang" % "2.5"
+)
+    
+    val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
+      // Add your own project settings here      
+    )
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(
-    // Add your own project settings here      
-  )
+
+
+
+
+
 
 }
