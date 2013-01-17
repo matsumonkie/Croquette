@@ -23,7 +23,7 @@ import com.google.gdata.data.extensions.PhoneNumber;
  * filter, sort, format google raw contacts 
  */
 public class Contacts {
-
+	// salut
 	private GoogleContacts googleContacts;
 
 	/**
