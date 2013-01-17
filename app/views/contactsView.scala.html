@@ -1,22 +1,16 @@
 @(contacts : Collection[models.Contact])
 
 <ul class="nav nav-pills nav-stacked">
-<li class="nav-header">Contacts</li>
-
-<div class="input-append">
-<input id="appendedInputButton" type="text" style="width:175px">
-<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
-</div>
-
-<!--<li class="active"><a href="#"></a></li>-->
-	@contacts.map {	contact => @contact.getPhoneNumbers().map { x => 
-						<li title="@x"><a>@contact.getName()</a></li> 
-						}
-					}
-			
+	<li class="nav-header">Contacts</li>
 	
+	<div class="input-append">
+		<input id="appendedInputButton" type="text" style="width:175px">
+		<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
+	</div>
 	
-	
-	
-	<!--<li><a href="#">name + num</a></li>--> 
+	@contacts.map {	contact =>
+		@contact.getPhoneNumbers().map { x => 
+			<li title="@x"><a>@contact.getName()</a></li> 
+		}
+	}
 </ul>

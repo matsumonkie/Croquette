@@ -11,6 +11,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.Logger;
+import play.cache.Cache;
 import play.libs.F.Callback;
 import play.libs.F.Callback0;
 import play.libs.Json;
@@ -41,9 +42,9 @@ public class Application extends Controller {
 			// user grant access to his contacts
 			if (optAccessToken.isPresent()) {
 				String accessToken = optAccessToken.get();
-				
 				String emailAddress = getUserEmailAddress(userUUID.get(), accessToken);
-				Collection<Contact> contacts= new Contacts(accessToken).getContacts();
+				
+				Collection<Contact> contacts = Sessions.getUserContacts(userUUID.get());
 				
 				Message msg = new Message(accessToken);
 				msg.login();
