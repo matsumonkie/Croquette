@@ -2,7 +2,7 @@ package models;
 
 /**
  * Message reçu ou envoyé par l'utilisateur.
- * @author Julien
+ * @author Julien & Iori
  */
 public class Message {
 	

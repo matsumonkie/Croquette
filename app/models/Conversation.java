@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Conversation {
 	
-	private Contact contact = null;
+	private String phoneNumber = "";
 	private List<Message> messages = new ArrayList<Message>();
 	
 	
@@ -23,8 +23,8 @@ public class Conversation {
 	/**
 	 * Constructeur par défaut
 	 */
-	public Conversation(Contact contact) {
-		this.contact = contact;
+	public Conversation(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 	
@@ -32,8 +32,8 @@ public class Conversation {
 	 * Obtenir l'interlocuteur
 	 * @return Contact
 	 */
-	public Contact getContact() {
-		return contact;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 	
 	
@@ -41,8 +41,8 @@ public class Conversation {
 	 * Définir l'interlocuteur
 	 * @param contact Contact
 	 */
-	public void setContact(Contact contact) {
-		this.contact = contact;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 	

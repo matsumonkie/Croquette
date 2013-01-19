@@ -6,15 +6,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 import com.google.gdata.data.contacts.ContactEntry;
 import com.google.gdata.data.extensions.Name;
 import com.google.gdata.data.extensions.PhoneNumber;
