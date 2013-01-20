@@ -14,8 +14,8 @@ object ApplicationBuild extends Build {
     javaJdbc,
     javaEbean,
 	//for XMPP
-	//"jivesoftware" % "smack" % "3.2.1",
     "org.igniterealtime.smack" % "smack" % "3.2.1",
+	"org.igniterealtime.smack" % "smackx" % "3.2.1",
 	//to retrieve contact from google
 	"com.google.gdata" % "core" % "1.47.1",
 	//to capitalize name
