@@ -1,4 +1,26 @@
-This is your new Play 2.0 application
-=====================================
+Croquette
+=========
 
-This file will be packaged with your application, when using `play dist`.
+
+
+A ajouter :
+    Fonctionnalit�s :
+        XMPP :
+            Envoi de messages avec GTalk
+            R�ception des messages de GTalk
+        Application :
+            Bouton send
+            Bouton Clear
+        Contact :
+            Changer la vue qui affiche les messages :
+                peut-�tre mettre le num�ro de t�l�phone dans l'URL, genre http://localhost:9000/chat?"0123456789"
+                ensuite la vue charge la conversation
+    Optimisation :
+        Persistance des contacts avec guava
+    Optionnels :
+    	Lors de la réception de messages :
+	    	Son d'alerte
+    		Alerte dans le titre de l'onglet
+        Fonction search 
+        Logo "Google" en haut � droite
+        Syst�me qui vide la m�moire "Session" au bout d'un certain temps d'inactivit�
