@@ -10,6 +10,7 @@ public class User extends Controller {
 	
 	private static final String USER_UUID_SESSION_PARAM = "userUUID";
 	
+	
 	/**
 	 * a user is connected if we have a session with its UUID
 	 */
@@ -17,6 +18,7 @@ public class User extends Controller {
 		return session(USER_UUID_SESSION_PARAM) != null;
 	}
 
+	
 	/**
 	 * create a new random UUID
 	 */
@@ -24,6 +26,7 @@ public class User extends Controller {
 		return UUID.randomUUID();
 	}
 
+	
 	/**
 	 * save the given uuid to the user session
 	 */
@@ -31,11 +34,12 @@ public class User extends Controller {
 		session(USER_UUID_SESSION_PARAM, userUUID.toString());
 	}
 
+	
 	/**
 	 * return the user UUID from the session if it exists
 	 */
 	public static Optional<UUID> getUserUUID() {
-		if (!isConnected()) {
+		if (! isConnected()) {
 			return Optional.absent();
 		} else {
 			return Optional.of(UUID.fromString(session(USER_UUID_SESSION_PARAM)));

@@ -31,6 +31,7 @@ public class Application extends Controller {
 		return ok("coucou toi!");
 	}
 
+	
 	public static Result index() {
 		Optional<UUID> optUserUUID = User.getUserUUID();
 
@@ -56,6 +57,7 @@ public class Application extends Controller {
 		return redirect("/authenticate");
 	}
 
+	
 	public static WebSocket<JsonNode> chat() {
 		return new WebSocket<JsonNode>() {
 
@@ -77,6 +79,7 @@ public class Application extends Controller {
 		};
 	}
 
+	
 	public static void sendMsg(WebSocket.Out<JsonNode> out, String author, String content) {
 		ObjectNode event = Json.newObject();
 		event.put("author", author);
@@ -85,6 +88,7 @@ public class Application extends Controller {
 		out.write(event);
 	}
 
+	
 	/*
 	 * sign off the user by cleaning caches, user sessions 
 	 * and disconnecting user from its gmail account
@@ -98,6 +102,7 @@ public class Application extends Controller {
 		Logger.info("-> user logged out");
 		return redirect("/authenticate");
 	}
+	
 	
 	/*
 	 * if email address already exists, return it
