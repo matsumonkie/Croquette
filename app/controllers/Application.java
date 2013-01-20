@@ -32,19 +32,20 @@ public class Application extends Controller {
 	}
 
 	public static Result index() {
-		Optional<UUID> userUUID = User.getUserUUID();
+		Optional<UUID> optUserUUID = User.getUserUUID();
 
 		// user was on this website earlier 
-		if (userUUID.isPresent()) {
+		if (optUserUUID.isPresent()) {
+			UUID userUUID = optUserUUID.get();
 			Logger.info("-> user already logged in");
-			Optional<String> optAccessToken = Sessions.getUserToken(userUUID.get());
+			Optional<String> optAccessToken = Sessions.getUserToken(userUUID);
 			
 			// user grant access to his contacts
 			if (optAccessToken.isPresent()) {
 				String accessToken = optAccessToken.get();
-				String emailAddress = getUserEmailAddress(userUUID.get(), accessToken);
 				
-				Collection<Contact> contacts = Sessions.getUserContacts(userUUID.get());
+				String emailAddress = getUserEmailAddress(userUUID, accessToken);
+				Collection<Contact> contacts = Sessions.getUserContacts(userUUID);
 				
 				Message msg = new Message(accessToken);
 				msg.login();

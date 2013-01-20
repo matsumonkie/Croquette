@@ -15,6 +15,8 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.Base64;
 
+import play.Logger;
+
 public class Message {
 
 	private String accessToken;
@@ -22,7 +24,7 @@ public class Message {
 	private final int PORT = 5222;
 	private final String SERVER = "gmail.com";
 
-	private final static String SASL_MECHANISM = "X-OAUTH2";
+	private final static String GOOGLE_SASL_MECHANISM = "X-OAUTH2";
 
 	private final class SASLGoogleOAuth2Mechanism extends SASLMechanism {
 
@@ -39,8 +41,10 @@ public class Message {
 			// Set the authenticationID as the username, since they must be the
 			// same in this case.
 			this.authenticationId = username;
-			this.hostname = host;
-
+			//this.hostname = host;
+			this.accessToken = host;
+			
+			/*
 			final TextInputCallback[] cbs = { new TextInputCallback("clientID"), new TextInputCallback("clientSecret"),
 					new TextInputCallback("accessToken") };
 			try {
@@ -51,7 +55,8 @@ public class Message {
 			clientID = cbs[0].getText();
 			clientSecret = cbs[1].getText();
 			accessToken = cbs[2].getText();
-
+			*/
+			
 			authenticate();
 		}
 
@@ -71,13 +76,13 @@ public class Message {
 
 		@Override
 		protected String getName() {
-			return SASL_MECHANISM;
+			return GOOGLE_SASL_MECHANISM;
 		}
 	}
 
 	static {
-		SASLAuthentication.registerSASLMechanism(SASL_MECHANISM, SASLGoogleOAuth2Mechanism.class);
-		SASLAuthentication.supportSASLMechanism(SASL_MECHANISM);
+		SASLAuthentication.registerSASLMechanism(GOOGLE_SASL_MECHANISM, SASLGoogleOAuth2Mechanism.class);
+		SASLAuthentication.supportSASLMechanism(GOOGLE_SASL_MECHANISM);
 	}
 
 	public Message(String accessToken) {
@@ -86,13 +91,21 @@ public class Message {
 
 	public void login() {
 		ConnectionConfiguration config = new ConnectionConfiguration(SERVICE, PORT, SERVER);
-		XMPPConnection client = new XMPPConnection(config);
 		config.setSASLAuthenticationEnabled(true);
+		XMPPConnection client = new XMPPConnection(config);
+		
 		try {
 			client.connect();
 			// client.login("uneadressemaildetest@gmail.com",
 			// "pourfaciliterledev");
-			//client.getSASLAuthentication().authenticate(arg0, arg1, arg2);
+			Logger.info("DEBUT");
+			String response = client.getSASLAuthentication().authenticate("matsuhar@gmail.com", accessToken, new CallbackHandler() {
+				@Override
+				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+				}
+			});
+			Logger.info("############ response = " + response);
+			Logger.info("FIN");
 			//client.login("matsuhar", accessToken);
 		} catch (XMPPException e) {
 			System.out.println("Error while connecting" + e);
