@@ -48,8 +48,10 @@ public class Application extends Controller {
 				String emailAddress = getUserEmailAddress(userUUID, accessToken);
 				Collection<Contact> contacts = Sessions.getUserContacts(userUUID);
 				
-				Message msg = new Message(accessToken);
-				msg.login();
+				XMPPConnectionHandler con = new XMPPConnectionHandler(emailAddress, accessToken);
+				con.setAuthenticationConf();
+				con.setPresenceAvailable();
+				con.sendMessage("coucou");
 				
 				return ok(mainView.render("main", emailAddress, contacts));
 			}
