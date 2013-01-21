@@ -6,17 +6,13 @@
 <!-- navigation menu -->
 <div class="span3 offset7 centered-text" style="height: 50px; line-height: 50px;">
 
-	@if(controllers.User.isConnected()) {
 		<a href="/sign-off">
 			<button class="btn">
-				@controllers.Sessions.getUserEmailAddress(controllers.User.getUserUUID().get()).get()
+				@defining(controllers.User.getUserUUID().get()) { userUUID =>
+					@controllers.Sessions.getUserEmailAddress(userUUID).get()
+				}
 				<i class="icon-off"></i>
 			</button>
 		</a>
-	} else {
-		<a href="/authenticate">
-			<button class="btn">Connexion</button>
-		</a>
-	}
 	
 </div>
