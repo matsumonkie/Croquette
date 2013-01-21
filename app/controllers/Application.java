@@ -43,14 +43,13 @@ public class Application extends Controller {
 			// user grant access to his contacts
 			if (optAccessToken.isPresent()) {
 				String accessToken = optAccessToken.get();
-				String emailAddress = getUserEmailAddress(userUUID.get(), accessToken);
 				
 				Collection<Contact> contacts = Sessions.getUserContacts(userUUID.get());
 				
 				Message msg = new Message(accessToken);
 				msg.login();
 				
-				return ok(mainView.render("main", emailAddress, contacts));
+				return ok(mainView.render("main", contacts));
 			}
 		}
 		return redirect("/authenticate");
@@ -100,22 +99,5 @@ public class Application extends Controller {
 		
 		Logger.info("-> user logged out");
 		return redirect("/authenticate");
-	}
-	
-	
-	/*
-	 * if email address already exists, return it
-	 * otherwise retrieve and register it before returning
-	 **/
-	private static String getUserEmailAddress(UUID userUUID, String accessToken) {
-		Optional<String> optUserEmailAddress = Sessions.getUserEmailAddress(userUUID);
-		if (optUserEmailAddress.isPresent()) {
-			return optUserEmailAddress.get();
-		} else {
-			UserEmail userEmail = new UserEmail();
-			String emailAddress = userEmail.getUserEmailAddress(accessToken);
-			Sessions.registerEmailAddress(userUUID, emailAddress);
-			return emailAddress;	
-		}
 	}
 }

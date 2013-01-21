@@ -6,7 +6,6 @@ import play.libs.F.Promise;
 import play.libs.WS;
 import play.libs.WS.Response;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 public class UserEmail {

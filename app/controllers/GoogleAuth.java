@@ -2,15 +2,13 @@ package controllers;
 
 import java.util.UUID;
 
+import models.UserEmail;
+
 import org.codehaus.jackson.JsonNode;
 
-import play.Logger;
+import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import play.libs.F.Promise;
-import play.libs.WS;
-import play.libs.WS.Response;
 
 import com.google.common.base.Optional;
 import com.typesafe.config.Config;
@@ -51,6 +49,7 @@ public class GoogleAuth extends Controller {
 
 	private static final String ACCESS_TOKEN_PARAM = "access_token";
 
+	
 	/**
 	 * Authenticate user using OAuth 2.0 if user is not already connected if
 	 * user never gave his approval, ask for permission to retrieve his contacts
@@ -68,6 +67,7 @@ public class GoogleAuth extends Controller {
 		return redirect(rq.toString());
 	}
 
+	
 	/**
 	 * 
 	 */
@@ -90,11 +90,17 @@ public class GoogleAuth extends Controller {
 				User.saveUserUUIDToSession(userUUID);
 				// register uuid and access token in the application
 				Sessions.registerToken(userUUID, accessToken);
+				
+				// sauvegarde de l'adresse email
+				UserEmail userEmail = new UserEmail();
+				String emailAddress = userEmail.getUserEmailAddress(accessToken);
+				Sessions.registerEmailAddress(userUUID, emailAddress);
 			}
 			return redirect("/");
 		}
 	}
 
+	
 	/**
 	 * execute a post request to retrieve the access token from the given code
 	 */
