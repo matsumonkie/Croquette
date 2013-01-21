@@ -1,13 +1,18 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.TextInputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonParser.NumberType;
+import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.JsonToken;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
@@ -17,10 +22,12 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
+import play.Logger;
+import play.libs.Json;
+import play.mvc.WebSocket;
+
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-
-import play.Logger;
 
 public class XMPPConnectionHandler {
 
@@ -100,6 +107,7 @@ public class XMPPConnectionHandler {
 
 	public void createChat() {
 		chat = client.getChatManager().createChat(login, null);
+		//chat = client.getChatManager().createChat("uneadressemaildetest@gmail.com", null);
 	}
 
 	public void listenChat() {
@@ -107,7 +115,22 @@ public class XMPPConnectionHandler {
 			chat.addMessageListener(new MessageListener() {
 				@Override
 				public void processMessage(Chat arg0, Message arg1) {
-					Logger.info("msg reçu : " + arg1);
+					Logger.info("msg reçu : " + arg1.getBody());
+				}
+			});
+		}
+	}
+
+	public void writeIncomingMsg (final WebSocket.Out<JsonNode> out) {
+		if (chat != null) {
+			chat.addMessageListener(new MessageListener() {
+				@Override
+				public void processMessage(Chat arg0, Message arg1) {
+					String body = arg1.getBody();
+					Logger.info("incoming message : " + body);
+					ObjectNode result = Json.newObject();
+					result.put("mpessage",  body);
+					out.write(result.objectNode());
 				}
 			});
 		}
