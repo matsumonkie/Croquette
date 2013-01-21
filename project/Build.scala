@@ -19,11 +19,12 @@ object ApplicationBuild extends Build {
 	//to retrieve contact from google
 	"com.google.gdata" % "core" % "1.47.1",
 	//to capitalize name
-	"commons-lang" % "commons-lang" % "2.5"
+	"commons-lang" % "commons-lang" % "2.5",
+	// cache Google
+	"com.google.guava" % "guava" % "14.0-rc1"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here      
   )
-
 }

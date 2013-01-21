@@ -12,6 +12,7 @@ public class UserEmail {
 
 	private static final String USER_EMAIL_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
 
+	
 	/**
 	 * return the user email address
 	 */
