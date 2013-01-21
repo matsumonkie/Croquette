@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.UUID;
 
 import models.Contact;
 import models.Contacts;
-import models.Conversation;
 import models.ListConversations;
 import play.Logger;
 

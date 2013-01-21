@@ -45,14 +45,14 @@ public class Application extends Controller {
 			if (optAccessToken.isPresent()) {
 				String accessToken = optAccessToken.get();
 				
-				String emailAddress = getUserEmailAddress(userUUID, accessToken);
+				String emailAddress = Sessions.getUserEmailAddress(userUUID).get();
 				Collection<Contact> contacts = Sessions.getUserContacts(userUUID);
 				
 				XMPPConnectionHandler con = new XMPPConnectionHandler(emailAddress, accessToken);
 				con.setAuthenticationConf();
 				con.setPresenceAvailable();
 				
-				return ok(mainView.render("main", emailAddress, contacts));
+				return ok(mainView.render("main", contacts));
 			}
 		}
 		return redirect("/authenticate");
@@ -102,22 +102,5 @@ public class Application extends Controller {
 		
 		Logger.info("-> user logged out");
 		return redirect("/authenticate");
-	}
-	
-	
-	/*
-	 * if email address already exists, return it
-	 * otherwise retrieve and register it before returning
-	 **/
-	private static String getUserEmailAddress(UUID userUUID, String accessToken) {
-		Optional<String> optUserEmailAddress = Sessions.getUserEmailAddress(userUUID);
-		if (optUserEmailAddress.isPresent()) {
-			return optUserEmailAddress.get();
-		} else {
-			UserEmail userEmail = new UserEmail();
-			String emailAddress = userEmail.getUserEmailAddress(accessToken);
-			Sessions.registerEmailAddress(userUUID, emailAddress);
-			return emailAddress;	
-		}
 	}
 }
