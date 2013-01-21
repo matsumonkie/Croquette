@@ -45,7 +45,7 @@ public class Application extends Controller {
 			if (optAccessToken.isPresent()) {
 				String accessToken = optAccessToken.get();
 				
-				String emailAddress = getUserEmailAddress(userUUID, accessToken);
+				String emailAddress = Sessions.getUserEmailAddress(userUUID).get();
 				Collection<Contact> contacts = Sessions.getUserContacts(userUUID);
 				
 				XMPPConnectionHandler con = new XMPPConnectionHandler(emailAddress, accessToken);
