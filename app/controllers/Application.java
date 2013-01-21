@@ -51,7 +51,6 @@ public class Application extends Controller {
 				XMPPConnectionHandler con = new XMPPConnectionHandler(emailAddress, accessToken);
 				con.setAuthenticationConf();
 				con.setPresenceAvailable();
-				con.sendMessage("coucou");
 				
 				return ok(mainView.render("main", emailAddress, contacts));
 			}
