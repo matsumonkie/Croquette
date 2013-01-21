@@ -18,18 +18,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * store access token and email address relative to a user uuid
  */
 public class Sessions {
 
+	private static final Config conf = ConfigFactory.load();
+	private static final int MAX_USER_HANDLED = conf.getInt("max_user_handled");
+	private static final int CONTACT_CACHE_EXPIRE_TIME_IN_MIN = conf.getInt("contact_cache_expire_time_in_min");
+	
 	private static Map<UUID, String> usersTokens = new HashMap<UUID, String>();
 	private static Map<UUID, String> usersEmailAddresses = new HashMap<UUID, String>();
 	private static Map<UUID, ListConversations> usersConversations = new HashMap<UUID, ListConversations>();
 	private static LoadingCache<UUID, Collection<Contact>> usersContacts = CacheBuilder.newBuilder()
-			.maximumSize(10000)
-			.expireAfterWrite(10, TimeUnit.SECONDS)
+			.maximumSize(MAX_USER_HANDLED)
+			.expireAfterWrite(CONTACT_CACHE_EXPIRE_TIME_IN_MIN, TimeUnit.MINUTES)
 			.build(
 				new CacheLoader<UUID, Collection<Contact>>() {
 					@Override
