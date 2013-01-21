@@ -52,7 +52,7 @@ public class Application extends Controller {
 				con.setAuthenticationConf();
 				con.setPresenceAvailable();
 				
-				return ok(mainView.render("main", contacts));
+				return ok(mainView.render("main"));
 			}
 		}
 		return redirect("/authenticate");

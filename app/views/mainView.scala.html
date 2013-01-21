@@ -1,4 +1,4 @@
-@(title: String, contacts: Collection[models.Contact])
+@(title: String)
 
 <!DOCTYPE html>
 	<html>
@@ -25,7 +25,7 @@
 	
 </div>
 
-<div class="ui-layout-west">@contactsView(contacts)</div>
+<div class="ui-layout-west">@contactsView()</div>
 
 <div class="ui-layout-north">@headerView()</div>
 <div class="ui-layout-south"><div class="centered-text">Croquette<i>!</i> 2012</div></div>

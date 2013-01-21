@@ -1,5 +1,3 @@
-@(contacts : Collection[models.Contact])
-
 <ul class="nav nav-pills nav-stacked">
 	<li class="nav-header">Contacts</li>
 	
@@ -8,9 +6,14 @@
 		<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
 	</div>
 	
-	@contacts.map {	contact =>
-		@contact.getPhoneNumbers().map { x => 
-			<li title="@x"><a>@contact.getName()</a></li> 
+	@defining(controllers.User.getUserUUID().get()) { userUUID =>
+		@defining(controllers.Sessions.getUserContacts(userUUID)) { contacts =>
+			@contacts.map { contact =>
+				@contact.getPhoneNumbers().map { x => 
+					<li title="@x"><a>@contact.getName()</a></li>
+				}
+			}
 		}
 	}
+
 </ul>
