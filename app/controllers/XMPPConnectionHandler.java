@@ -8,6 +8,7 @@ import javax.security.auth.callback.TextInputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;

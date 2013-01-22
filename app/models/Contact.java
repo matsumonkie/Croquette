@@ -12,6 +12,7 @@ public class Contact implements Comparable<Contact> {
 
 	private String name = "";
 	private List<String> phoneNumbers = new ArrayList<String>();
+	private Boolean notification = false;
 
 	
 	/**
@@ -19,11 +20,11 @@ public class Contact implements Comparable<Contact> {
 	 * @param name Nom
 	 * @param phoneNumbers Numéros de téléphone
 	 */
-	public Contact (String name, Collection<PhoneNumber> phoneNumbers) {
+	public Contact(String name, Collection<PhoneNumber> phoneNumbers) {
 		// name have a capital!  
 		this.name = WordUtils.capitalizeFully(name.toLowerCase());
 		
-		for(PhoneNumber number : phoneNumbers) {
+		for (PhoneNumber number : phoneNumbers) {
 			this.phoneNumbers.add(number.getPhoneNumber());
 		}
 	}
@@ -47,6 +48,20 @@ public class Contact implements Comparable<Contact> {
 	}
 	
 	
+	/**
+	 * Contact ayant un message non lu
+	 * @return True ou False
+	 */
+	public Boolean haveNotification() {
+		return notification;
+	}
+	
+	
+	/**
+	 * Comparaison de 2 contacts
+	 * @param other Contact
+	 * @return 
+	 */
 	public int compareTo(Contact other) {
 		return this.name.compareToIgnoreCase(other.name);
 	}

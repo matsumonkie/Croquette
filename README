@@ -16,7 +16,7 @@ A ajouter :
                 peut-�tre mettre le num�ro de t�l�phone dans l'URL, genre http://localhost:9000/chat?"0123456789"
                 ensuite la vue charge la conversation
     Optimisation :
-        Persistance des contacts avec guava
+        L'injection de balises dans le champ texte
     Optionnels :
     	Lors de la réception de messages :
 	    	Son d'alerte
