@@ -12,7 +12,7 @@
 		var receiveEvent = function(event) {
             var message= JSON.parse(event.data)
 
-		    if(message.error) {
+		    if (message.error) {
 		        chatSocket.close()
 		        return
 		    } else if (message) {
@@ -55,9 +55,11 @@
 		    } 
 		}
 		
+        // Fonctions appelees lors des evenements sur les objets HTML
 		$("#talk").keypress(handleReturnKey)  
 		$(".sendButton").click(function() { sendMessage() });
-		$(".clearButton").click(function() { $("#messages").html('<table id="messages" style="width:100%"><tr></tr></table>') });
+		$(".clearButton").click(function() { $("#messages").html('<table id="messages" style="width:100%"><tr></tr></table>') }); // TODO: Suppression dans le cache
+		
 		chatSocket.onmessage = receiveEvent
     });
     
