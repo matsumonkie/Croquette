@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -9,10 +8,6 @@ import javax.security.auth.callback.TextInputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonParser.NumberType;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.JsonToken;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
@@ -22,8 +17,9 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
+import org.json.JSONObject;
+
 import play.Logger;
-import play.libs.Json;
 import play.mvc.WebSocket;
 
 import com.typesafe.config.Config;
@@ -121,16 +117,26 @@ public class XMPPConnectionHandler {
 		}
 	}
 
+	/**
+	 * listen for new xmpp messages. If incoming xmpp message is originally an 
+	 * SMS, write it to the websocket  
+	 * @param out
+	 */
 	public void writeIncomingMsg (final WebSocket.Out<JsonNode> out) {
 		if (chat != null) {
 			chat.addMessageListener(new MessageListener() {
 				@Override
-				public void processMessage(Chat arg0, Message arg1) {
-					String body = arg1.getBody();
-					Logger.info("incoming message : " + body);
-					ObjectNode result = Json.newObject();
-					result.put("mpessage",  body);
-					out.write(result.objectNode());
+				public void processMessage(Chat arg0, Message msgReceived) {
+					String body = msgReceived.getBody();
+					models.Message msg = new models.Message();
+					if (msg.isJson(body)) {
+						JSONObject jsonObject = msg.convertStringToJSon(body);
+						if (msg.isIncomingSMS(jsonObject)) {
+							Logger.info("incoming message : " + body);
+							JSonNode node = new JSonNode();
+							out.write(jsonObject.);						
+						}
+					}
 				}
 			});
 		}

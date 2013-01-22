@@ -1,74 +1,67 @@
 package models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Message reçu ou envoyé par l'utilisateur.
+ * 
  * @author Julien & Iori
  */
-public class Message {
+public class Message extends JSONObject {
+
+	private String ACTION_PARAM = "action";
+	private String SENDER_PARAM = "sender";
+	private String RECIPIENT_PARAM = "recipient";
+	private String BODY_PARAM = "body";
 	
-	private String text = "";
-	private Boolean send = false;
-	
-	
+	private String RECEIVE_SMS_ACTION = "receive-sms-action";
+	private String SEND_SMS_ACTION = "send-sms-action";
+
 	/**
 	 * Constructeur par défaut
 	 */
-	public Message() {
+	public Message(String action, String sender, String body) {
+		try {
+			put(ACTION_PARAM, action);
+			put(RECIPIENT_PARAM, sender);
+			put(BODY_PARAM, body);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
+	public Message(){}
 	
 	/**
-	 * Constructeur
-	 * @param text Texte du message
+	 * return wether msg is using json format 
 	 */
-	public Message(String text) {
-		this.text = text;
+	public boolean isJson(String msg) {
+		try {
+			new JSONObject(msg);
+		} catch (JSONException e) {
+			return false;
+		}
+		return true;
 	}
 	
-	
-	/**
-	 * Constructeur
-	 * @param text Texte du message
-	 * @param send True si c'est un message reçu, False si c'est l'utilisateur qui l'envoie
-	 */
-	public Message(String text, Boolean send) {
-		this.text = text;
-		this.send = send;
+	public JSONObject convertStringToJSon(String msg) {
+		JSONObject res = null;
+		try {
+			res = new JSONObject(msg);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		return res;
 	}
 	
-	
-	/**
-	 * Obtenir le texte du message
-	 * @return Texte
-	 */
-	public String getText() {
-		return text;
+	public boolean isIncomingSMS(JSONObject msg) {
+		try {
+			return msg.get(ACTION_PARAM).equals(RECEIVE_SMS_ACTION);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
-	
-	
-	/**
-	 * Définir le texte du message
-	 * @param text Texte
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
-	
-	
-	/**
-	 * Messayé envoyé par l'utilisateur
-	 * @return True ou False
-	 */
-	public Boolean sent() {
-		return send;
-	}
-	
-	
-	/**
-	 * Messayé reçu par l'utilisateur
-	 * @return True ou False
-	 */
-	public Boolean received() {
-		return !send;
-	}
+
 }
