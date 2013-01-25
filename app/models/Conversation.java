@@ -62,4 +62,5 @@ public class Conversation {
 	public void addMessage(Message message) {
 		messages.add(message);
 	}
+	
 }

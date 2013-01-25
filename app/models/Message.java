@@ -63,6 +63,10 @@ public class Message {
 		return send;
 	}
 	
+	public Boolean getSend() {
+		return send;
+	}
+	
 	
 	/**
 	 * Messayé reçu par l'utilisateur

@@ -5,10 +5,11 @@ import java.util.UUID;
 
 import models.Conversation;
 import models.ListConversations;
+import models.Message;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-//import org.json.JSONObject;
+import org.json.JSONObject;
 
 import play.Logger;
 import play.Routes;
@@ -26,14 +27,6 @@ import com.google.common.base.Optional;
 
 public class Application extends Controller {
 
-	public static Result test() {
-		Logger.info(">>>start");
-
-		Logger.info(">>>end");
-		return ok("coucou toi!");
-	}
-
-	
 	public static Result index() {
 		Optional<UUID> optUserUUID = User.getUserUUID();
 
@@ -121,13 +114,18 @@ public class Application extends Controller {
 	}
 	
 	
-	
-	/*public static void listConversations(String phoneNumber) {
+	public static Result getConversation(String phoneNumber) {
 		UUID userUUID = User.getUserUUID().get();
 		ListConversations listConversations = Sessions.getUserConversations(userUUID);
 		Conversation conversation = listConversations.getConversation(phoneNumber);
-		JSONObject jsonObject = new JSONObject(conversation);
-		String jsonString = jsonObject.toString();
-		ok(jsonString);
-	}*/
+		
+		// DEBUG
+		conversation.addMessage(new Message("je suis loin", false));
+		conversation.addMessage(new Message("c'est moi", true));
+		
+		JSONObject json = new JSONObject(conversation);
+		Logger.info(json.toString());
+		return ok(json.toString());
+	}
+	
 }
