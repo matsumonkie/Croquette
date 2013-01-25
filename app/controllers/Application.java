@@ -1,11 +1,18 @@
 package controllers;
 
+import java.awt.image.renderable.RenderableImage;
 import java.util.UUID;
+
+import models.Conversation;
+import models.ListConversations;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+//import org.json.JSONObject;
 
 import play.Logger;
+import play.Routes;
+import play.api.libs.json.JsObject;
 import play.libs.F.Callback;
 import play.libs.F.Callback0;
 import play.libs.Json;
@@ -43,9 +50,9 @@ public class Application extends Controller {
 		}
 		return redirect("/authenticate");
 	}
-
 	
-	public static WebSocket<JsonNode> chat() {
+	
+	public static WebSocket<JsonNode> chatSocket() {
 		// we need the http context in the websocket handler
 		final Context ctx = ctx();
 
@@ -112,4 +119,15 @@ public class Application extends Controller {
 		Logger.info("-> user logged out");
 		return redirect("/authenticate");
 	}
+	
+	
+	
+	/*public static void listConversations(String phoneNumber) {
+		UUID userUUID = User.getUserUUID().get();
+		ListConversations listConversations = Sessions.getUserConversations(userUUID);
+		Conversation conversation = listConversations.getConversation(phoneNumber);
+		JSONObject jsonObject = new JSONObject(conversation);
+		String jsonString = jsonObject.toString();
+		ok(jsonString);
+	}*/
 }

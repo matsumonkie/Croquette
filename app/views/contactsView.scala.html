@@ -11,22 +11,10 @@
 		@defining(controllers.Sessions.getUserContacts(userUUID)) { contacts =>
 			@contacts.map { contact =>
 				@contact.getPhoneNumbers().map { phoneNumber => 
-					<li title="@phoneNumber" onClick="choixContact('@phoneNumber')"><a>@contact.getName()</a></li>
+					<li title="@phoneNumber"><a>@contact.getName()</a></li>
 				}
 			}
 		}
 	}
 	
 </ul>
-
-
-
-<script type="text/javascript">
-
-	//$(".contactClick").click(function() { confirm('fenetre_popup') });
-	function choixContact(phoneNumber) {
-		alert("Mettre a jour la vue associee au numero : " + phoneNumber);
-		//document.getElementById("messages");
-	}
-
-</script>

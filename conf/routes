@@ -7,7 +7,7 @@ GET     /               	controllers.Application.index()
 GET     /authenticate		controllers.GoogleAuth.authenticate()
 GET     /sign-off			controllers.Application.SignOff()
 GET     /register_user		controllers.GoogleAuth.registerUser(code: String ?= "")
-GET     /chat           	controllers.Application.chat()
+GET     /chatSocket         controllers.Application.chatSocket()
 
 GET		/test			controllers.Application.test()
 
