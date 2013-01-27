@@ -1,67 +1,63 @@
 package models;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.codehaus.jackson.node.ObjectNode;
 
-/**
- * Message reçu ou envoyé par l'utilisateur.
- * 
- * @author Julien & Iori
- */
-public class Message extends JSONObject {
+import play.libs.Json;
 
-	private String ACTION_PARAM = "action";
-	private String SENDER_PARAM = "sender";
-	private String RECIPIENT_PARAM = "recipient";
-	private String BODY_PARAM = "body";
-	
-	private String RECEIVE_SMS_ACTION = "receive-sms-action";
-	private String SEND_SMS_ACTION = "send-sms-action";
+public class Message {
 
-	/**
-	 * Constructeur par défaut
-	 */
-	public Message(String action, String sender, String body) {
-		try {
-			put(ACTION_PARAM, action);
-			put(RECIPIENT_PARAM, sender);
-			put(BODY_PARAM, body);
-		} catch (JSONException e) {
-			e.printStackTrace();
+	public enum Action {
+		SEND_SMS("send-sms-action"), RECEIVE_SMS("receive-sms-action");
+
+		private final String text;
+
+		private Action(String text) {
+			this.text = text;
+		}
+
+		public String toString() {
+			return this.text;
 		}
 	}
-	
-	public Message(){}
-	
-	/**
-	 * return wether msg is using json format 
-	 */
-	public boolean isJson(String msg) {
-		try {
-			new JSONObject(msg);
-		} catch (JSONException e) {
-			return false;
-		}
-		return true;
+
+	private String authorPhoneNumber;
+	private String recipient;
+	private String content;
+	private Action action;
+
+	public Message(XMPPMessage xmppMsg) {
+		this(xmppMsg.getAction(), xmppMsg.getAuthorPhoneNumber(), xmppMsg.getRecipient(), xmppMsg.getContent());
 	}
 	
-	public JSONObject convertStringToJSon(String msg) {
-		JSONObject res = null;
-		try {
-			res = new JSONObject(msg);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} 
-		return res;
-	}
-	
-	public boolean isIncomingSMS(JSONObject msg) {
-		try {
-			return msg.get(ACTION_PARAM).equals(RECEIVE_SMS_ACTION);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return false;
+	public Message(Action action, String authorPhoneNumber, String recipient, String content) {
+		this.action = action;
+		this.authorPhoneNumber = authorPhoneNumber;
+		this.recipient = recipient;
+		this.content = content;
 	}
 
+	public String getAuthorPhoneNumber() {
+		return authorPhoneNumber;
+	}
+
+	public String getRecipient() {
+		return recipient;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public Action getAction() {
+		return action;
+	}
+	
+	public ObjectNode asJson() {
+		ObjectNode msg = Json.newObject();
+		msg.put("authorPhoneNumber", authorPhoneNumber);
+		msg.put("content", content);
+		msg.put("recipient", recipient);
+		
+		return msg;
+	}
 }

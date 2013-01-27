@@ -8,17 +8,19 @@ import javax.security.auth.callback.TextInputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromContainsFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
-
-import org.json.JSONObject;
 
 import play.Logger;
 import play.mvc.WebSocket;
@@ -35,7 +37,10 @@ public class XMPPConnectionHandler {
 	private final String SERVER = "gmail.com";
 	private XMPPConnection client;
 	private Chat chat = null;
-
+	// Create a packet filter to listen for new messages from a particular
+	// user. We use an AndFilter to combine two other filters.
+	private PacketFilter filter;
+	
 	private static final Config conf = ConfigFactory.load();
 	private static final boolean XMPP_DEBUG_ENABLE = conf.getBoolean("xmpp_debug_enable");
 
@@ -78,6 +83,25 @@ public class XMPPConnectionHandler {
 	}
 
 	/**
+	 * will create and init all the correct settings to be able to listen to
+	 * incoming message
+	 */
+	public void init() {
+		setAuthenticationConf();
+		setPresenceAvailable();
+		createChat();
+	}
+	
+	/**
+	 * remove every created listeners 
+	 */
+	public void deleteAliveListeners() {
+		for(MessageListener listener : chat.getListeners()) {
+			chat.removeMessageListener(listener);
+		}
+	}
+	
+	/**
 	 * set the configuration for authentication, we will use gtalk with SASL
 	 * authentication
 	 */
@@ -102,51 +126,21 @@ public class XMPPConnectionHandler {
 		client.sendPacket(presence);
 	}
 
-	public void createChat() {
-		chat = client.getChatManager().createChat(login, null);
-		//chat = client.getChatManager().createChat("uneadressemaildetest@gmail.com", null);
-	}
-
-	public void listenChat() {
-		if (chat != null) {
-			chat.addMessageListener(new MessageListener() {
-				@Override
-				public void processMessage(Chat arg0, Message arg1) {
-					Logger.info("msg reçu : " + arg1.getBody());
-				}
-			});
-		}
-	}
-
 	/**
-	 * listen for new xmpp messages. If incoming xmpp message is originally an 
-	 * SMS, write it to the websocket  
-	 * @param out
+	 * just listen to message coming from us
 	 */
-	public void writeIncomingMsg (final WebSocket.Out<JsonNode> out) {
-		if (chat != null) {
-			chat.addMessageListener(new MessageListener() {
-				@Override
-				public void processMessage(Chat arg0, Message msgReceived) {
-					String body = msgReceived.getBody();
-					models.Message msg = new models.Message();
-					if (msg.isJson(body)) {
-						JSONObject jsonObject = msg.convertStringToJSon(body);
-						if (msg.isIncomingSMS(jsonObject)) {
-							Logger.info("incoming message : " + body);
-							JSonNode node = new JSonNode();
-							out.write(jsonObject.);						
-						}
-					}
-				}
-			});
-		}
+	public void createChat() {
+		chat = client.getChatManager().createChat(login, null); 
+	}
+	
+	public Chat getChat() {
+		return chat;
 	}
 
-	public void sendMessage(String msg) {
+	public void sendMessage(models.Message msg) {
 		if (chat != null) {
 			try {
-				chat.sendMessage(msg);
+				chat.sendMessage("test");//msg.asJson().asText());
 			} catch (XMPPException e) {
 				System.out.println("Error while sending message" + e);
 			}

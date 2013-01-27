@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import models.Contact;
 import models.Contacts;
-import models.ListConversations;
+import models.Conversations;
 import play.Logger;
 
 import com.google.common.base.Optional;
@@ -32,7 +32,7 @@ public class Sessions {
 	
 	private static Map<UUID, String> usersTokens = new HashMap<UUID, String>();
 	private static Map<UUID, String> usersEmailAddresses = new HashMap<UUID, String>();
-	private static Map<UUID, ListConversations> usersConversations = new HashMap<UUID, ListConversations>();
+	private static Map<UUID, Conversations> usersConversations = new HashMap<UUID, Conversations>();
 	private static LoadingCache<UUID, Collection<Contact>> usersContacts = CacheBuilder.newBuilder()
 			.maximumSize(MAX_USER_HANDLED)
 			.expireAfterWrite(CONTACT_CACHE_EXPIRE_TIME_IN_MIN, TimeUnit.MINUTES)
@@ -84,10 +84,10 @@ public class Sessions {
 	}
 	
 	
-	public static ListConversations getUserConversations(UUID userUUID) {
-		ListConversations conversations = usersConversations.get(userUUID);
+	public static Conversations getUserConversations(UUID userUUID) {
+		Conversations conversations = usersConversations.get(userUUID);
 		if (conversations == null) {
-			conversations = new ListConversations();
+			conversations = new Conversations();
 			usersConversations.put(userUUID, conversations);
 		}
 		return conversations;
