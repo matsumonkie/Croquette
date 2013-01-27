@@ -22,11 +22,15 @@
 
 
 <script type="text/javascript">
-
-	//$(".contactClick").click(function() { confirm('fenetre_popup') });
 	function choixContact(phoneNumber) {
-		alert("Mettre a jour la vue associee au numero : " + phoneNumber);
-		//document.getElementById("messages");
+		$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) {
+			$.each(conversation.messages, function(index, message) {
+				//if (message.send)
+				//	alert("Droite : " + message.text)
+				//else
+				//	alert("Gauche : " + message.text)
+			})
+		})
+		.error(function() { alert("error"); }) // DEBUG
 	}
-
 </script>

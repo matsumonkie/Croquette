@@ -2,7 +2,7 @@
 
     $(function() {
         var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
-        var chatSocket = new WS("@routes.Application.chat().webSocketURL()")
+        var chatSocket = new WS("@routes.Application.chatSocket().webSocketURL()")
 
         var sendMessage = function() {
             chatSocket.send(JSON.stringify( { content: $("#talk").val() } ))
@@ -49,7 +49,7 @@
 		}
 		
         var handleReturnKey = function(e) {
-		    if(e.charCode == 13 || e.keyCode == 13) {
+		    if (e.charCode == 13 || e.keyCode == 13) {
 		        e.preventDefault()
 		        sendMessage()
 		    } 

@@ -21,7 +21,9 @@ object ApplicationBuild extends Build {
 	//to capitalize name
 	"commons-lang" % "commons-lang" % "2.5",
 	// cache Google
-	"com.google.guava" % "guava" % "14.0-rc1"
+	"com.google.guava" % "guava" % "14.0-rc1",
+	// JSON
+	"org.json" % "org.json" % "chargebee-1.0"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

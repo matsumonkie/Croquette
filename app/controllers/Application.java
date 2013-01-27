@@ -1,14 +1,14 @@
 package controllers;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import models.Conversation;
 import models.Conversations;
-import models.XMPPMessage;
 import models.Message.Action;
+import models.XMPPMessage;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -16,7 +16,6 @@ import org.jivesoftware.smack.packet.Message;
 import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Callback0;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http.Context;
 import play.mvc.Result;
@@ -27,13 +26,6 @@ import com.google.common.base.Optional;
 
 public class Application extends Controller {
 
-	public static Result test() {
-		Logger.info(">>>start");
-
-		Logger.info(">>>end");
-		return ok("coucou toi!");
-	}
-
 	public static Result index() {
 		if (User.getUserUUID().isPresent()) {
 			return ok(mainView.render("main"));
@@ -41,14 +33,14 @@ public class Application extends Controller {
 		return redirect("/authenticate");
 	}
 
-	public static WebSocket<JsonNode> chat() {
+	public static WebSocket<JsonNode> chatSocket() {
 		// we need the http context in the websocket handler
 		final Context ctx = ctx();
 
 		return new WebSocket<JsonNode>() {
 
-			private XMPPConnectionHandler con; 
-			
+			private XMPPConnectionHandler con;
+
 			public void onReady(WebSocket.In<JsonNode> in, final WebSocket.Out<JsonNode> out) {
 
 				in.onMessage(new Callback<JsonNode>() {
@@ -62,7 +54,8 @@ public class Application extends Controller {
 				in.onClose(new Callback0() {
 					public void invoke() {
 						Logger.info(" -> Websocket closed");
-						// we do not want to keep the listeners since we are going to create new ones
+						// we do not want to keep the listeners since we are
+						// going to create new ones
 						con.deleteAliveListeners();
 					}
 				});
@@ -78,15 +71,15 @@ public class Application extends Controller {
 				Context.current.set(ctx);
 				UUID userUUID = User.getUserUUID().get();
 				// init the xmpp connection
-				//XMPPConnectionHandler con = 
-						con = initXMPPConnectionHandler(userUUID);
+				// XMPPConnectionHandler con =
+				con = initXMPPConnectionHandler(userUUID);
 				// get the chat so that we can create a xmpp listener
 				Chat chat = con.getChat();
 				saveNewMessage(out, userUUID, chat);
-				
-				/*for(int i = 0; i<10; i++) {
-				sendMsgTest(con);				
-				}*/
+
+				/*
+				 * for(int i = 0; i<10; i++) { sendMsgTest(con); }
+				 */
 			}
 
 			/**
@@ -100,7 +93,7 @@ public class Application extends Controller {
 				connection.init();
 				return connection;
 			}
-			
+
 			private void sendMsgTest(XMPPConnectionHandler con) {
 				models.Message msg = new models.Message(Action.RECEIVE_SMS, "0695617776", "matsuhar@gmail.com", "coucou");
 				con.sendMessage(msg);
@@ -124,14 +117,14 @@ public class Application extends Controller {
 
 							models.Message message = new models.Message(xmppMsg);
 							conversation.addMessage(message);
-							
-							//finally notify the client a new sms has arrived
+
+							// finally notify the client a new sms has arrived
 							notifyNewMessage(out, message);
 						}
 					}
 				});
 			}
-			
+
 			/**
 			 * 
 			 */
@@ -149,10 +142,22 @@ public class Application extends Controller {
 	public static Result SignOff() {
 		Optional<UUID> userUUID = User.getUserUUID();
 		Sessions.removeUserData(userUUID.get());
-		
+
 		session().clear();
 
 		Logger.info("-> user logged out");
 		return redirect("/authenticate");
+	}
+
+	public static Result getConversation(String phoneNumber) {
+		UUID userUUID = User.getUserUUID().get();
+		Conversations conversations = Sessions.getUserConversations(userUUID);
+		Conversation conversation = conversations.getConversation(phoneNumber);
+
+		// DEBUG
+		conversation.addMessage(new models.Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
+		conversation.addMessage(new models.Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+
+		return ok(conversation.getConversationAsJson());
 	}
 }
