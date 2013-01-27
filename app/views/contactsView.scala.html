@@ -18,19 +18,3 @@
 	}
 	
 </ul>
-
-
-
-<script type="text/javascript">
-	function choixContact(phoneNumber) {
-		$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) {
-			$.each(conversation.messages, function(index, message) {
-				//if (message.send)
-				//	alert("Droite : " + message.text)
-				//else
-				//	alert("Gauche : " + message.text)
-			})
-		})
-		.error(function() { alert("error"); }) // DEBUG
-	}
-</script>
