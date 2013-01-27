@@ -137,7 +137,7 @@ public class XMPPConnectionHandler {
 		return chat;
 	}
 
-	public void sendMessage(models.Message msg) {
+	public void sendMessage(models.Message.BasicMessage msg) {
 		if (chat != null) {
 			try {
 				chat.sendMessage("test");//msg.asJson().asText());

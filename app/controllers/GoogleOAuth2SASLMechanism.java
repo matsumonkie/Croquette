@@ -14,6 +14,9 @@ import org.jivesoftware.smack.util.Base64;
 
 import play.Logger;
 
+/**
+ * class that implements the sasl mechanism to authenticate a user with google oauth 2.0
+ */
 public class GoogleOAuth2SASLMechanism extends SASLMechanism {
 
 	public final static String GOOGLE_SASL_MECHANISM = "X-OAUTH2";

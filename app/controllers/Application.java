@@ -1,17 +1,15 @@
 package controllers;
 
-import java.util.Collection;
 import java.util.UUID;
 
 import models.Conversation;
 import models.Conversations;
+import models.Message;
 import models.Message.Action;
-import models.XMPPMessage;
 
 import org.codehaus.jackson.JsonNode;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.packet.Message;
 
 import play.Logger;
 import play.libs.F.Callback;
@@ -95,7 +93,7 @@ public class Application extends Controller {
 			}
 
 			private void sendMsgTest(XMPPConnectionHandler con) {
-				models.Message msg = new models.Message(Action.RECEIVE_SMS, "0695617776", "matsuhar@gmail.com", "coucou");
+				Message.BasicMessage msg = new Message.BasicMessage(Action.RECEIVE_SMS, "0695617776", "matsuhar@gmail.com", "coucou");
 				con.sendMessage(msg);
 			}
 
@@ -105,9 +103,9 @@ public class Application extends Controller {
 			private void saveNewMessage(final WebSocket.Out<JsonNode> out, final UUID userUUID, Chat chat) {
 				chat.addMessageListener(new MessageListener() {
 					@Override
-					public void processMessage(Chat arg0, Message msg) {
+					public void processMessage(Chat arg0, org.jivesoftware.smack.packet.Message msg) {
 						Logger.info("msg = " + msg.getBody());
-						XMPPMessage xmppMsg = new XMPPMessage(msg);
+						Message.XMPPMessage xmppMsg = new Message.XMPPMessage(msg);
 						// if message received is originally an sms, handle it!
 						if (xmppMsg.isSMSMessage()) {
 							String authorPhoneNumber = xmppMsg.getAuthorPhoneNumber();
@@ -115,7 +113,7 @@ public class Application extends Controller {
 							Conversations conversations = Sessions.getUserConversations(userUUID);
 							Conversation conversation = conversations.getConversation(authorPhoneNumber);
 
-							models.Message message = new models.Message(xmppMsg);
+							Message.BasicMessage message = new Message.BasicMessage(xmppMsg);
 							conversation.addMessage(message);
 
 							// finally notify the client a new sms has arrived
@@ -128,7 +126,7 @@ public class Application extends Controller {
 			/**
 			 * 
 			 */
-			public void notifyNewMessage(WebSocket.Out<JsonNode> out, models.Message newMsg) {
+			public void notifyNewMessage(WebSocket.Out<JsonNode> out, Message.BasicMessage newMsg) {
 				out.write(newMsg.asJson());
 			}
 
@@ -155,8 +153,8 @@ public class Application extends Controller {
 		Conversation conversation = conversations.getConversation(phoneNumber);
 
 		// DEBUG
-		conversation.addMessage(new models.Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
-		conversation.addMessage(new models.Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+		conversation.addMessage(new Message.BasicMessage(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
+		conversation.addMessage(new Message.BasicMessage(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
 
 		return ok(conversation.getConversationAsJson());
 	}
