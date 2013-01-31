@@ -51,9 +51,9 @@ public class Message {
 		jsonMsg = Json.parse(xmppMsg.getBody());
 
 		if (jsonMsg != null) {
-			authorPhoneNumber = jsonMsg.findValue("authorPhoneNumber").toString();
-			recipient = jsonMsg.findValue("recipient").toString();
-			content = jsonMsg.findValue("content").toString();
+			authorPhoneNumber = jsonMsg.findValue("authorPhoneNumber").getTextValue();
+			recipient = jsonMsg.findValue("recipient").getTextValue();
+			content = jsonMsg.findValue("content").getTextValue();
 
 			String action = jsonMsg.findValue("action").getTextValue();
 			Logger.info(action);
