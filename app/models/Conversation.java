@@ -18,6 +18,9 @@ public class Conversation {
 		conversation.add(message);
 	}
 
+	/**
+	 * create a json object containing a conversation 
+	 */
 	public ObjectNode getConversationAsJson() {
 		ObjectNode conv = Json.newObject();
 		
@@ -27,6 +30,10 @@ public class Conversation {
 		}
 
 		return conv;
+	}
+	
+	public boolean isEmpty() {
+		return conversation.isEmpty();
 	}
 
 }

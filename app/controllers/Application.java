@@ -95,6 +95,7 @@ public class Application extends Controller {
 
 			private void sendMsgTest(XMPPConnectionHandler con) {
 				Message msg = new Message(Action.RECEIVE_SMS, "064-814-5187", "matsuhar@gmail.com", "coucou");
+				Logger.info("new SMS:" + msg.asJson().toString());
 				con.sendMessage(msg);
 			}
 
@@ -113,7 +114,6 @@ public class Application extends Controller {
 							// find corresponding conversation
 							Conversations conversations = Sessions.getUserConversations(userUUID);
 							Conversation conversation = conversations.getConversation(authorPhoneNumber);
-
 							conversation.addMessage(msg);
 
 							// finally notify the client a new sms has arrived
@@ -127,6 +127,7 @@ public class Application extends Controller {
 			 * 
 			 */
 			public void notifyNewMessage(WebSocket.Out<JsonNode> out, Message newMsg) {
+				Logger.info("new SMS");
 				out.write(newMsg.asJson());
 			}
 
@@ -151,11 +152,13 @@ public class Application extends Controller {
 		UUID userUUID = User.getUserUUID().get();
 		Conversations conversations = Sessions.getUserConversations(userUUID);
 		Conversation conversation = conversations.getConversation(phoneNumber);
-
-		// DEBUG
-		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
-		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
-
-		return ok(conversation.getConversationAsJson());
+		
+		if (!conversation.isEmpty()) {
+			// DEBUG
+			//conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
+			//conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+			return ok(conversation.getConversationAsJson());
+		}
+		return ok("");
 	}
 }

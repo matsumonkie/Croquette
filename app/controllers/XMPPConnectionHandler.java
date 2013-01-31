@@ -40,7 +40,7 @@ public class XMPPConnectionHandler {
 	// Create a packet filter to listen for new messages from a particular
 	// user. We use an AndFilter to combine two other filters.
 	private PacketFilter filter;
-	
+
 	private static final Config conf = ConfigFactory.load();
 	private static final boolean XMPP_DEBUG_ENABLE = conf.getBoolean("xmpp_debug_enable");
 
@@ -91,16 +91,16 @@ public class XMPPConnectionHandler {
 		setPresenceAvailable();
 		createChat();
 	}
-	
+
 	/**
-	 * remove every created listeners 
+	 * remove every created listeners
 	 */
 	public void deleteAliveListeners() {
-		for(MessageListener listener : chat.getListeners()) {
+		for (MessageListener listener : chat.getListeners()) {
 			chat.removeMessageListener(listener);
 		}
 	}
-	
+
 	/**
 	 * set the configuration for authentication, we will use gtalk with SASL
 	 * authentication
@@ -130,21 +130,24 @@ public class XMPPConnectionHandler {
 	 * just listen to message coming from us
 	 */
 	public void createChat() {
-		chat = client.getChatManager().createChat(login, null); 
+		chat = client.getChatManager().createChat(login, null);
 	}
-	
+
 	public Chat getChat() {
 		return chat;
 	}
 
-	public void sendMessage(models.Message msg) {
+	public void sendMessage(String msg) {
 		if (chat != null) {
 			try {
-				chat.sendMessage("test");
+				chat.sendMessage(msg);
 			} catch (XMPPException e) {
 				System.out.println("Error while sending message" + e);
 			}
 		}
+	}
 
+	public void sendMessage(models.Message msg) {
+		sendMessage(msg.asJson().toString());
 	}
 }

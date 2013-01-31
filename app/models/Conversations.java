@@ -3,6 +3,8 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Optional;
+
 /**
  * contains everyone conversations  
  */
@@ -12,8 +14,11 @@ public class Conversations {
 	private Map<String, Conversation> conversations = new HashMap<String, Conversation>();
 	
 	public Conversation getConversation(String phoneNumber) {
-		return conversations.get(phoneNumber);
+		Conversation conv = conversations.get(phoneNumber);
+		if (conv == null) {
+			conv = new Conversation();
+		}
+		return conv;
 	}
-	
 	
 }
