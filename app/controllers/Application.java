@@ -153,12 +153,12 @@ public class Application extends Controller {
 		Conversations conversations = Sessions.getUserConversations(userUUID);
 		Conversation conversation = conversations.getConversation(phoneNumber);
 		
-		if (!conversation.isEmpty()) {
+		//if (!conversation.isEmpty()) {
 			// DEBUG
-			//conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
-			//conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+			conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
+			conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
 			return ok(conversation.getConversationAsJson());
-		}
-		return ok("");
+		//}
+		//return ok("");
 	}
 }

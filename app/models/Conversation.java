@@ -3,6 +3,7 @@ package models;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
@@ -21,15 +22,15 @@ public class Conversation {
 	/**
 	 * create a json object containing a conversation 
 	 */
-	public ObjectNode getConversationAsJson() {
+	public ArrayNode getConversationAsJson() {
 		ObjectNode conv = Json.newObject();
 		
-		conv.putArray("conversation");
+		ArrayNode arrayNode = conv.putArray("conversation");
 		for (Message msg : conversation) {
-			conv.put("message", msg.asJson());
+			arrayNode.add(msg.asJson());
 		}
 
-		return conv;
+		return arrayNode;
 	}
 	
 	public boolean isEmpty() {
