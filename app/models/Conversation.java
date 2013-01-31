@@ -12,9 +12,9 @@ import play.libs.Json;
  */
 public class Conversation {
 
-	private Collection<Message.BasicMessage> conversation = new ArrayList<Message.BasicMessage>();
+	private Collection<Message> conversation = new ArrayList<Message>();
 
-	public void addMessage(Message.BasicMessage message) {
+	public void addMessage(Message message) {
 		conversation.add(message);
 	}
 
@@ -22,7 +22,7 @@ public class Conversation {
 		ObjectNode conv = Json.newObject();
 		
 		conv.putArray("conversation");
-		for (Message.BasicMessage msg : conversation) {
+		for (Message msg : conversation) {
 			conv.put("message", msg.asJson());
 		}
 

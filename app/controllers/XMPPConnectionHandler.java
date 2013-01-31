@@ -137,10 +137,10 @@ public class XMPPConnectionHandler {
 		return chat;
 	}
 
-	public void sendMessage(models.Message.BasicMessage msg) {
+	public void sendMessage(models.Message msg) {
 		if (chat != null) {
 			try {
-				chat.sendMessage("test");//msg.asJson().asText());
+				chat.sendMessage("test");
 			} catch (XMPPException e) {
 				System.out.println("Error while sending message" + e);
 			}

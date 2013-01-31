@@ -75,9 +75,10 @@ public class Application extends Controller {
 				Chat chat = con.getChat();
 				saveNewMessage(out, userUUID, chat);
 
-				/*
-				 * for(int i = 0; i<10; i++) { sendMsgTest(con); }
-				 */
+				for (int i = 0; i < 2; i++) {
+					sendMsgTest(con);
+				}
+
 			}
 
 			/**
@@ -93,7 +94,7 @@ public class Application extends Controller {
 			}
 
 			private void sendMsgTest(XMPPConnectionHandler con) {
-				Message.BasicMessage msg = new Message.BasicMessage(Action.RECEIVE_SMS, "0695617776", "matsuhar@gmail.com", "coucou");
+				Message msg = new Message(Action.RECEIVE_SMS, "064-814-5187", "matsuhar@gmail.com", "coucou");
 				con.sendMessage(msg);
 			}
 
@@ -103,21 +104,20 @@ public class Application extends Controller {
 			private void saveNewMessage(final WebSocket.Out<JsonNode> out, final UUID userUUID, Chat chat) {
 				chat.addMessageListener(new MessageListener() {
 					@Override
-					public void processMessage(Chat arg0, org.jivesoftware.smack.packet.Message msg) {
-						Logger.info("msg = " + msg.getBody());
-						Message.XMPPMessage xmppMsg = new Message.XMPPMessage(msg);
+					public void processMessage(Chat arg0, org.jivesoftware.smack.packet.Message xmppMsg) {
+						Message msg = new Message(xmppMsg);
 						// if message received is originally an sms, handle it!
-						if (xmppMsg.isSMSMessage()) {
-							String authorPhoneNumber = xmppMsg.getAuthorPhoneNumber();
+						if (msg.isSMSMessage()) {
+							msg.initMessage();
+							String authorPhoneNumber = msg.getAuthorPhoneNumber();
 							// find corresponding conversation
 							Conversations conversations = Sessions.getUserConversations(userUUID);
 							Conversation conversation = conversations.getConversation(authorPhoneNumber);
 
-							Message.BasicMessage message = new Message.BasicMessage(xmppMsg);
-							conversation.addMessage(message);
+							conversation.addMessage(msg);
 
 							// finally notify the client a new sms has arrived
-							notifyNewMessage(out, message);
+							notifyNewMessage(out, msg);
 						}
 					}
 				});
@@ -126,7 +126,7 @@ public class Application extends Controller {
 			/**
 			 * 
 			 */
-			public void notifyNewMessage(WebSocket.Out<JsonNode> out, Message.BasicMessage newMsg) {
+			public void notifyNewMessage(WebSocket.Out<JsonNode> out, Message newMsg) {
 				out.write(newMsg.asJson());
 			}
 
@@ -153,8 +153,8 @@ public class Application extends Controller {
 		Conversation conversation = conversations.getConversation(phoneNumber);
 
 		// DEBUG
-		conversation.addMessage(new Message.BasicMessage(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
-		conversation.addMessage(new Message.BasicMessage(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
+		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
 
 		return ok(conversation.getConversationAsJson());
 	}

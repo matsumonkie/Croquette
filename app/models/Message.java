@@ -5,6 +5,9 @@ import org.codehaus.jackson.JsonNode;
 
 import play.libs.Json;
 
+/**
+ * represents a message send from us to us with xmpp
+ */
 public class Message {
 
 	public enum Action {
@@ -21,111 +24,78 @@ public class Message {
 		}
 	}
 
-	/**
-	 *  represent an xmpp message send from us to us 
-	 */
-	public static class XMPPMessage extends org.jivesoftware.smack.packet.Message {
+	private JsonNode jsonMsg = null;
 
-		private JsonNode jsonMsg = null;
-		
-		public XMPPMessage(org.jivesoftware.smack.packet.Message msg) {
-			// recreate the xmpp message
-			super(msg.getTo(), Type.chat);
-			super.setBody(msg.getBody());
-			// parse the body to get the json
-			jsonMsg = Json.parse(this.getBody());
-		}
-		
-		
-		/**
-		 * check wether the xmpp message is wrapping an sms  
-		 */
-		public boolean isSMSMessage() {
-			if (jsonMsg != null && jsonMsg.has("action")) {
-				String actionReceived = jsonMsg.findPath("action").getTextValue();
-				if (actionReceived == models.Message.Action.RECEIVE_SMS.toString()) {
-					return true;
-				}
+	private String authorPhoneNumber;
+	private String recipient;
+	private String content;
+	private Action action;
+
+	/**
+	 * retrieve the content to json format 
+	 */
+	public Message(org.jivesoftware.smack.packet.Message xmppMsg) {
+		jsonMsg = Json.parse(xmppMsg.getBody());
+	}
+
+	public Message(Action action, String authorPhoneNumber, String recipient, String content) {
+		this.action = action;
+		this.authorPhoneNumber = authorPhoneNumber;
+		this.recipient = recipient;
+		this.content = content;
+	}
+
+	/**
+	 * check wether the xmpp message is wrapping an sms
+	 */
+	public boolean isSMSMessage() {
+		if (jsonMsg != null && jsonMsg.has("action")) {
+			String actionReceived = jsonMsg.findPath("action").getTextValue();
+			if (actionReceived == models.Message.Action.RECEIVE_SMS.toString()) {
+				return true;
 			}
-			return false;
 		}
-		
-		
-		public String getAuthorPhoneNumber() {
-			return jsonMsg.findValue("author").getTextValue();
-		}
-		
-		
-		public models.Message.Action getAction() {
+		return false;
+	}
+	
+	/*
+	 * retrieve elements from the xmpp message to create our object
+	 */
+	public void initMessage() {
+		if (jsonMsg != null) {
+			this.authorPhoneNumber = jsonMsg.findValue("author").getTextValue();
 			String action = jsonMsg.findValue("action").getTextValue();
-			return models.Message.Action.valueOf(action);
-		}
-		
-		
-		public String getRecipient() {
-			return jsonMsg.findValue("recipient").getTextValue();
-		}
-		
-		
-		public String getContent() {
-			return jsonMsg.findValue("content").getTextValue();
+			this.action = models.Message.Action.valueOf(action);
+			this.recipient = jsonMsg.findValue("recipient").getTextValue();
+			this.content = jsonMsg.findValue("content").getTextValue();
 		}
 	}
 
+	public String getAuthorPhoneNumber() {
+		return authorPhoneNumber;
+	}
+
+	public String getRecipient() {
+		return recipient;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public Action getAction() {
+		return action;
+	}
 
 	/**
-	 * represents a simple message with the possibility of Json exportation  
+	 * format message as a json object
 	 */
-	public static class BasicMessage {
+	public ObjectNode asJson() {
+		ObjectNode msg = Json.newObject();
+		msg.put("authorPhoneNumber", authorPhoneNumber);
+		msg.put("content", content);
+		msg.put("recipient", recipient);
 
-		private String authorPhoneNumber;
-		private String recipient;
-		private String content;
-		private Action action;
-
-		
-		public BasicMessage(XMPPMessage xmppMsg) {
-			this(xmppMsg.getAction(), xmppMsg.getAuthorPhoneNumber(), xmppMsg.getRecipient(), xmppMsg.getContent());
-		}
-
-		
-		public BasicMessage(Action action, String authorPhoneNumber, String recipient, String content) {
-			this.action = action;
-			this.authorPhoneNumber = authorPhoneNumber;
-			this.recipient = recipient;
-			this.content = content;
-		}
-
-		
-		public String getAuthorPhoneNumber() {
-			return authorPhoneNumber;
-		}
-
-		
-		public String getRecipient() {
-			return recipient;
-		}
-
-		
-		public String getContent() {
-			return content;
-		}
-
-		
-		public Action getAction() {
-			return action;
-		}
-
-		/**
-		 * format message as a json object
-		 */
-		public ObjectNode asJson() {
-			ObjectNode msg = Json.newObject();
-			msg.put("authorPhoneNumber", authorPhoneNumber);
-			msg.put("content", content);
-			msg.put("recipient", recipient);
-
-			return msg;
-		}
+		return msg;
 	}
 }
