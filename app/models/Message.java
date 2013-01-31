@@ -3,6 +3,9 @@ package models;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.JsonNode;
 
+import akka.actor.dsl.Creators.Act;
+
+import play.Logger;
 import play.libs.Json;
 
 /**
@@ -19,8 +22,18 @@ public class Message {
 			this.text = text;
 		}
 
-		public String toString() {
-			return this.text;
+		public String getText() {
+			return text;
+		}
+
+		public static Action fromString(String text) {
+			if (text != null) {
+				for (Action action : Action.values()) {
+					if (text.equals(action.text))
+						return action;
+				}
+			}
+			return null;
 		}
 	}
 
@@ -32,10 +45,22 @@ public class Message {
 	private Action action;
 
 	/**
-	 * retrieve the content to json format 
+	 * retrieve the content to json format
 	 */
 	public Message(org.jivesoftware.smack.packet.Message xmppMsg) {
 		jsonMsg = Json.parse(xmppMsg.getBody());
+
+		if (jsonMsg != null) {
+			authorPhoneNumber = jsonMsg.findValue("authorPhoneNumber").toString();
+			recipient = jsonMsg.findValue("recipient").toString();
+			content = jsonMsg.findValue("content").toString();
+
+			String action = jsonMsg.findValue("action").getTextValue();
+			Logger.info(action);
+			if (action != null) {
+				this.action = Action.fromString("receive-sms-action");
+			}
+		}
 	}
 
 	public Message(Action action, String authorPhoneNumber, String recipient, String content) {
@@ -48,27 +73,13 @@ public class Message {
 	/**
 	 * check wether the xmpp message is wrapping an sms
 	 */
-	public boolean isSMSMessage() {
-		if (jsonMsg != null && jsonMsg.has("action")) {
-			String actionReceived = jsonMsg.findPath("action").getTextValue();
-			if (actionReceived == models.Message.Action.RECEIVE_SMS.toString()) {
+	public boolean isNewIncomingSMS() {
+		if (jsonMsg != null) {
+			if (action == models.Message.Action.RECEIVE_SMS) {
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	/*
-	 * retrieve elements from the xmpp message to create our object
-	 */
-	public void initMessage() {
-		if (jsonMsg != null) {
-			this.authorPhoneNumber = jsonMsg.findValue("author").getTextValue();
-			String action = jsonMsg.findValue("action").getTextValue();
-			this.action = models.Message.Action.valueOf(action);
-			this.recipient = jsonMsg.findValue("recipient").getTextValue();
-			this.content = jsonMsg.findValue("content").getTextValue();
-		}
 	}
 
 	public String getAuthorPhoneNumber() {
@@ -92,6 +103,7 @@ public class Message {
 	 */
 	public ObjectNode asJson() {
 		ObjectNode msg = Json.newObject();
+		msg.put("action", action.getText());
 		msg.put("authorPhoneNumber", authorPhoneNumber);
 		msg.put("content", content);
 		msg.put("recipient", recipient);

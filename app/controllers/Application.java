@@ -69,10 +69,11 @@ public class Application extends Controller {
 				Context.current.set(ctx);
 				UUID userUUID = User.getUserUUID().get();
 				// init the xmpp connection
-				// XMPPConnectionHandler con =
 				con = initXMPPConnectionHandler(userUUID);
 				// get the chat so that we can create a xmpp listener
 				Chat chat = con.getChat();
+
+				// on new incoming message, save it and send it to the client
 				saveNewMessage(out, userUUID, chat);
 
 				for (int i = 0; i < 2; i++) {
@@ -108,8 +109,7 @@ public class Application extends Controller {
 					public void processMessage(Chat arg0, org.jivesoftware.smack.packet.Message xmppMsg) {
 						Message msg = new Message(xmppMsg);
 						// if message received is originally an sms, handle it!
-						if (msg.isSMSMessage()) {
-							msg.initMessage();
+						if (msg.isNewIncomingSMS()) {
 							String authorPhoneNumber = msg.getAuthorPhoneNumber();
 							// find corresponding conversation
 							Conversations conversations = Sessions.getUserConversations(userUUID);
@@ -127,7 +127,6 @@ public class Application extends Controller {
 			 * 
 			 */
 			public void notifyNewMessage(WebSocket.Out<JsonNode> out, Message newMsg) {
-				Logger.info("new SMS");
 				out.write(newMsg.asJson());
 			}
 
@@ -155,7 +154,7 @@ public class Application extends Controller {
 		
 		//if (!conversation.isEmpty()) {
 			// DEBUG
-			conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "je suis loin"));
+			conversation.addMessage(new Message(Action.RECEIVE_SMS, "08899889", "monDestinataire", "je suis loin"));
 			conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
 			return ok(conversation.getConversationAsJson());
 		//}
