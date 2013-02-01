@@ -1,6 +1,5 @@
 @(title: String)
-
-<!DOCTYPE html>
+<!doctype html>
 <html>
 		@htmlHeader(title)
 		@websocket()
@@ -9,15 +8,12 @@
 		<div class="ui-layout-center">
 			
 			<div class="inner-center">
-				<table id="messages" style="width:100%">
-				  <tr>
-				  </tr>
-				</table>
+				<table id="messages" style="width:100%"></table>
 			</div>
 			
 			<div class="ui-layout-south">
-					<div class="input-append" style="width:90%;">
-						<input id="talk" type="text" style="width:90%;">
+					<div class="input-append" style="width:90%">
+						<input id="talk" type="text" style="width:90%">
 						<button class="btn sendButton" type="button">Send <i class="icon-comment"></i></button>
 						<button class="btn clearButton" type="button">Clear <i class="icon-remove"></i></button>
 					</div>

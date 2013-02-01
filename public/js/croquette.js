@@ -1,74 +1,92 @@
-(function() {
-	var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
-    var chatSocket = new WS("@routes.Application.chatSocket().webSocketURL()")
+var POSITION_OF_INCOMING_MESSAGE = "left"
+var POSITION_OF_SENDING_MESSAGE = "right" 
 
-    var sendMessage = function() {
-        chatSocket.send(JSON.stringify( { content: $("#talk").val() } ))
-        $("#talk").val('')
-    }
-    
-	var receiveEvent = function(event) {
-        var message= JSON.parse(event.data)
+/**
+ * send a json formatted message with a websocket and add message to the conversation UI 
+ */
+var sendMessage = function (websocket, msg) {
+	var jsonMsg = JSON.stringify( { content: msg })		
+	websocket.send(jsonMsg)
+	addMessageToConversation(msg, POSITION_OF_SENDING_MESSAGE)
+	
+}
 
-	    if (message.error) {
-	        chatSocket.close()
-	        return
-	    } else if (message) {
-	    	i++;
-	    	var position = "left"
-	    	if (i % 2) {
-	    		position = "right"
-	    	}
-	    	var box = createArrowBox(message.content, position)
-	    	addRow(box)
-	    	scrollBottom()
-	    }
+
+/**
+ * check if key pressed was the return key
+ */ 
+function keyPressedIsReturnKey(key) {
+    if (key.charCode == 13 || key.keyCode == 13) {
+        key.preventDefault()
+        return true
+    } 
+    return false
+}
+
+
+/**
+ * add the incoming message to the chat  
+ */
+function handleIncomingMessage(event) {
+	var message = JSON.parse(event.data)
+
+    if (message.error) {
+        chatSocket.close()
+        return
+    } else if (message) {
+    	addMessageToConversation(message.content, POSITION_OF_INCOMING_MESSAGE)
     }
+}
+
+
+/**
+ * add a message to the conversation UI  
+ */
+function addMessageToConversation(message, position) {
+	// create the message element
+	var box = createArrowBox(message, position)
 	
-	var i = 2;
+	// set it invisible
+	box.css("opacity", "0")
 	
-	function createArrowBox(content, position) {
-		var date    = $('<tr><td class="date" align="' + position + '"><i>14:25</i></td></tr>')
-		var bubble  = $('<div class="' + position + '_arrow_box">' + content + '</div>')
-		var message = $('<tr><td align="' + position + '">' + bubble.prop("outerHTML") + '</td>')
-		message.css("opacity", "0")
+	// add it to the UI
+   	$('#messages').append(box)
+   	
+   	// set it visible
+    box.animate({ opacity: 1 }, 500)
+
+    // scroll down smoothly so that we can always see the last message
+    $('.inner-center').animate({ scrollTop: $('#messages').height() }, 400)
+}
+
 		
-		return message
-	}
+function createArrowBox(content, position) {
+	var date    = $('<tr><td class="date" align="' + position + '"><i>14:25</i></td></tr>')
+	var bubble  = $('<div class="' + position + '_arrow_box">' + content + '</div>')
+	var message = $('<tr><td align="' + position + '">' + bubble.prop("outerHTML") + '</td>')
 	
-	function addRow(box) {
-        $('#messages tr:last').after(box);
-        box.animate({ opacity: 1 }, 500)
-	}
-	
-	//for each new message added, scroll down smoothly so that we can always see the last message 
-	function scrollBottom() {
-		$('.inner-center').animate({ scrollTop: $('#messages').height() }, 400)
-	}
-	
-    var handleReturnKey = function(e) {
-	    if (e.charCode == 13 || e.keyCode == 13) {
-	        e.preventDefault()
-	        sendMessage()
-	    } 
-	}
-	
-    // Fonctions appelees lors des evenements sur les objets HTML
-	$("#talk").keypress(handleReturnKey)  
-	$(".sendButton").click(function() { sendMessage() });
-	$(".clearButton").click(function() { $("#messages").html('<table id="messages" style="width:100%"><tr></tr></table>') }); // TODO: Suppression dans le cache
-	
-	chatSocket.onmessage = receiveEvent
-});
+	return message
+}
+
+
+/**
+ * clear the conversation
+ */
+function clearConversation() {
+	$("#messages").empty()
+}
+
 
 function choixContact(phoneNumber) {
-	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) {
-		$.each(conversation.messages, function(index, message) {
-			//if (message.send)
-			//	alert("Droite : " + message.text)
-			//else
-			//	alert("Gauche : " + message.text)
-		})
-	})
-	.error(function() { alert("error"); }) // DEBUG
+	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {},
+			function(conversation) {
+				$.each(conversation.messages, function(index, message) {
+					// if (message.send)
+					// alert("Droite : " + message.text)
+					// else
+					// alert("Gauche : " + message.text)
+				})
+			}).error(function() {
+		alert("error");
+	}) // DEBUG
 }

@@ -44,16 +44,14 @@ public class Application extends Controller {
 				in.onMessage(new Callback<JsonNode>() {
 					public void invoke(JsonNode event) {
 						Logger.info(" -> New SMS : " + event);
-						out.write(event);
-						sendMsgTest(con);
+						//out.write(event);
 					}
 				});
 
 				in.onClose(new Callback0() {
 					public void invoke() {
 						Logger.info(" -> Websocket closed");
-						// we do not want to keep the listeners since we are
-						// going to create new ones
+						// we do not want to keep the listeners since we are going to create new ones
 						con.deleteAliveListeners();
 					}
 				});
