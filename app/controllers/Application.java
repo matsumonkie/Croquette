@@ -42,21 +42,43 @@ public class Application extends Controller {
 			public void onReady(WebSocket.In<JsonNode> in, final WebSocket.Out<JsonNode> out) {
 
 				in.onMessage(new Callback<JsonNode>() {
-					public void invoke(JsonNode event) {
-						Logger.info(" -> New SMS : " + event);
-						//out.write(event);
+					public void invoke(JsonNode newMessage) {
+						Logger.info(" -> New SMS : " + newMessage);
+
+						// restore http context
+						Context.current.set(ctx);
+						
+						// and save message
+						saveMessageInConversation(newMessage);
 					}
 				});
 
 				in.onClose(new Callback0() {
 					public void invoke() {
 						Logger.info(" -> Websocket closed");
-						// we do not want to keep the listeners since we are going to create new ones
+						// we do not want to keep the listeners since we are
+						// going to create new ones
 						con.deleteAliveListeners();
 					}
 				});
 
 				handleIncomingMsg(out);
+			}
+
+			private void saveMessageInConversation(JsonNode newMessage) {
+				Message message = new Message(newMessage);
+				
+				if (message.messageToSend()) {
+					UUID userUUID = User.getUserUUID().get();
+
+					// save message in the conversation
+					Conversations conversations = Sessions.getUserConversations(userUUID);
+					Conversation conversation = conversations.getConversation(message.getRecipient());
+					conversation.addMessage(message);
+					
+					//and send it with xmpp
+					con.sendMessage(message);
+				}
 			}
 
 			/*
@@ -149,13 +171,13 @@ public class Application extends Controller {
 		UUID userUUID = User.getUserUUID().get();
 		Conversations conversations = Sessions.getUserConversations(userUUID);
 		Conversation conversation = conversations.getConversation(phoneNumber);
-		
-		//if (!conversation.isEmpty()) {
-			// DEBUG
-			conversation.addMessage(new Message(Action.RECEIVE_SMS, "08899889", "monDestinataire", "je suis loin"));
-			conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
-			return ok(conversation.getConversationAsJson());
-		//}
-		//return ok("");
+
+		// if (!conversation.isEmpty()) {
+		// DEBUG
+		conversation.addMessage(new Message(Action.RECEIVE_SMS, "08899889", "monDestinataire", "je suis loin"));
+		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+		return ok(conversation.getConversationAsJson());
+		// }
+		// return ok("");
 	}
 }

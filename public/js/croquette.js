@@ -1,6 +1,6 @@
 var POSITION_OF_INCOMING_MESSAGE = "left"
 var POSITION_OF_SENDING_MESSAGE = "right" 
-
+var SEND_SMS_ACTION = "send-sms-action"
 /**
  * send a json formatted message with a websocket and add message to the conversation UI 
  */
@@ -9,6 +9,8 @@ var sendMessage = function (websocket, msg) {
 	var jsonObject = { 
 			content: msg,
 			author: null,
+			recipient: null,
+			action: SEND_SMS_ACTION,
 			date: now.getHours() + "h" + now.getMinutes()
 	}
 	var jsonMsg = JSON.stringify( jsonObject )		

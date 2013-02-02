@@ -40,8 +40,6 @@ public class Message {
 		}
 	}
 
-	private JsonNode jsonMsg = null;
-
 	private String authorPhoneNumber;
 	private String recipient;
 	private String content;
@@ -52,21 +50,21 @@ public class Message {
 	 * retrieve the content to json format
 	 */
 	public Message(org.jivesoftware.smack.packet.Message xmppMsg) {
-		jsonMsg = Json.parse(xmppMsg.getBody());
+		this(Json.parse(xmppMsg.getBody()));
+	}
 
-		if (jsonMsg != null) {
-			authorPhoneNumber = jsonMsg.findValue("authorPhoneNumber").getTextValue();
-			recipient = jsonMsg.findValue("recipient").getTextValue();
-			content = jsonMsg.findValue("content").getTextValue();
+	public Message(JsonNode jsonNode) {
+		authorPhoneNumber = jsonNode.findValue("authorPhoneNumber").getTextValue();
+		recipient = jsonNode.findValue("recipient").getTextValue();
+		content = jsonNode.findValue("content").getTextValue();
 
-			String action = jsonMsg.findValue("action").getTextValue();
-			Logger.info(action);
-			if (action != null) {
-				this.action = Action.fromString("receive-sms-action");
-			}
-
-			this.date = new DateTime();
+		String action = jsonNode.findValue("action").getTextValue();
+		Logger.info(action);
+		if (action != null) {
+			this.action = Action.fromString("receive-sms-action");
 		}
+
+		this.date = new DateTime();
 	}
 
 	public Message(Action action, String authorPhoneNumber, String recipient, String content) {
@@ -81,14 +79,13 @@ public class Message {
 	 * check wether the xmpp message is wrapping an sms
 	 */
 	public boolean isNewIncomingSMS() {
-		if (jsonMsg != null) {
-			if (action == models.Message.Action.RECEIVE_SMS) {
-				return true;
-			}
-		}
-		return false;
+		return (action == models.Message.Action.RECEIVE_SMS);
 	}
 
+	public boolean messageToSend() {
+		return (action == models.Message.Action.SEND_SMS);
+	}
+	
 	public String getAuthorPhoneNumber() {
 		return authorPhoneNumber;
 	}
