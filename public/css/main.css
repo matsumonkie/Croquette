@@ -91,7 +91,8 @@
 	margin-top: -12px;
 }
 
-td.date {
+i.date {
+	margin-top:10px;
 	display:block;
 	height:15px;
 	font-size:0.7em;

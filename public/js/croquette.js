@@ -59,13 +59,27 @@ function addMessageToConversation(message, position) {
     $('.inner-center').animate({ scrollTop: $('#messages').height() }, 400)
 }
 
-		
+
+/**
+ * create a dom containing the message positioned either on the left or on the right
+ * depending on who is the author 
+ */
 function createArrowBox(content, position) {
-	var date    = $('<tr><td class="date" align="' + position + '"><i>14:25</i></td></tr>')
-	var bubble  = $('<div class="' + position + '_arrow_box">' + content + '</div>')
-	var message = $('<tr><td align="' + position + '">' + bubble.prop("outerHTML") + '</td>')
+	var message = new Array()
+	message.push('<tr>')
 	
-	return message
+	// create message
+	message.push('<td align="' + position + '">')
+	message.push('<i class="date">14:25</i>')
+	message.push('<div class=' + position + '_arrow_box>' + content + '</div>')
+	message.push('</td>')
+
+	message.push('</tr>')
+
+	// create a fake dom with the created array and only retreive its children
+	var dom = $('<div></div>').html( message.join('') ).children();
+	
+	return dom
 }
 
 
