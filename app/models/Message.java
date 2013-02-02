@@ -2,6 +2,9 @@ package models;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.JsonNode;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import akka.actor.dsl.Creators.Act;
 
@@ -43,6 +46,7 @@ public class Message {
 	private String recipient;
 	private String content;
 	private Action action;
+	private DateTime date;
 
 	/**
 	 * retrieve the content to json format
@@ -60,6 +64,8 @@ public class Message {
 			if (action != null) {
 				this.action = Action.fromString("receive-sms-action");
 			}
+
+			this.date = new DateTime();
 		}
 	}
 
@@ -68,6 +74,7 @@ public class Message {
 		this.authorPhoneNumber = authorPhoneNumber;
 		this.recipient = recipient;
 		this.content = content;
+		this.date = new DateTime();
 	}
 
 	/**
@@ -107,6 +114,9 @@ public class Message {
 		msg.put("authorPhoneNumber", authorPhoneNumber);
 		msg.put("content", content);
 		msg.put("recipient", recipient);
+
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("HH'h'mm");
+		msg.put("date", fmt.print(date));
 
 		return msg;
 	}

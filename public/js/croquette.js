@@ -5,10 +5,15 @@ var POSITION_OF_SENDING_MESSAGE = "right"
  * send a json formatted message with a websocket and add message to the conversation UI 
  */
 var sendMessage = function (websocket, msg) {
-	var jsonMsg = JSON.stringify( { content: msg })		
+	var now = new Date()
+	var jsonObject = { 
+			content: msg,
+			author: null,
+			date: now.getHours() + "h" + now.getMinutes()
+	}
+	var jsonMsg = JSON.stringify( jsonObject )		
 	websocket.send(jsonMsg)
-	addMessageToConversation(msg, POSITION_OF_SENDING_MESSAGE)
-	
+	addMessageToConversation(jsonObject, POSITION_OF_SENDING_MESSAGE)
 }
 
 
@@ -34,7 +39,7 @@ function handleIncomingMessage(event) {
         chatSocket.close()
         return
     } else if (message) {
-    	addMessageToConversation(message.content, POSITION_OF_INCOMING_MESSAGE)
+    	addMessageToConversation(message, POSITION_OF_INCOMING_MESSAGE)
     }
 }
 
@@ -42,9 +47,9 @@ function handleIncomingMessage(event) {
 /**
  * add a message to the conversation UI  
  */
-function addMessageToConversation(message, position) {
+function addMessageToConversation(jsonMsg, position) {
 	// create the message element
-	var box = createArrowBox(message, position)
+	var box = createArrowBox(jsonMsg, position)
 	
 	// set it invisible
 	box.css("opacity", "0")
@@ -64,14 +69,14 @@ function addMessageToConversation(message, position) {
  * create a dom containing the message positioned either on the left or on the right
  * depending on who is the author 
  */
-function createArrowBox(content, position) {
+function createArrowBox(jsonMsg, position) {
 	var message = new Array()
 	message.push('<tr>')
 	
 	// create message
 	message.push('<td align="' + position + '">')
-	message.push('<i class="date">14:25</i>')
-	message.push('<div class=' + position + '_arrow_box>' + content + '</div>')
+	message.push('<i class="date">' + jsonMsg.date + '</i>')
+	message.push('<div class=' + position + '_arrow_box>' + jsonMsg.content + '</div>')
 	message.push('</td>')
 
 	message.push('</tr>')
