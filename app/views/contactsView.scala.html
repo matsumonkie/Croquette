@@ -7,8 +7,6 @@
 		<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
 	</div>
 
-	<button title="test" onclick="foo(this)">Try it</button>
-
 	@defining(controllers.User.getUserUUID().get()) { userUUID =>
 		@defining(controllers.Sessions.getUserContacts(userUUID)) { contacts =>
 			@contacts.map { contact =>
