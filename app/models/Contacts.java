@@ -112,7 +112,7 @@ public class Contacts {
 	private Collection<ContactEntry> filterContacts(List<ContactEntry> contacts) {
 		return Collections2.filter(contacts, Predicates.and(CONTACT_HAS_NAME, CONTACT_HAS_VALID_PHONE_NUMBER));
 	}
-
+	
 	private Collection<Contact> castContacts(Collection<ContactEntry> contacts) {
 		Collection<Contact> castedContacts = Collections2.transform(contacts, CREATE_CONTACT);
 		List<Contact> sortedContacts = new ArrayList<Contact>(castedContacts);
