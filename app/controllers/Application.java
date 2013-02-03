@@ -31,6 +31,7 @@ public class Application extends Controller {
 		return redirect("/authenticate");
 	}
 
+	
 	public static WebSocket<JsonNode> chatSocket() {
 		// we need the http context in the websocket handler
 		final Context ctx = ctx();
@@ -99,7 +100,6 @@ public class Application extends Controller {
 				for (int i = 0; i < 2; i++) {
 					sendMsgTest(con);
 				}
-
 			}
 
 			/**
@@ -149,10 +149,10 @@ public class Application extends Controller {
 			public void notifyNewMessage(WebSocket.Out<JsonNode> out, Message newMsg) {
 				out.write(newMsg.asJson());
 			}
-
 		};
 	}
 
+	
 	/*
 	 * sign off the user by cleaning caches, user sessions and disconnecting
 	 * user from its gmail account
@@ -167,17 +167,17 @@ public class Application extends Controller {
 		return redirect("/authenticate");
 	}
 
+	
 	public static Result getConversation(String phoneNumber) {
 		UUID userUUID = User.getUserUUID().get();
 		Conversations conversations = Sessions.getUserConversations(userUUID);
 		Conversation conversation = conversations.getConversation(phoneNumber);
 
-		// if (!conversation.isEmpty()) {
 		// DEBUG
-		conversation.addMessage(new Message(Action.RECEIVE_SMS, "08899889", "monDestinataire", "je suis loin"));
-		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
+		if (conversation.isEmpty()) {
+			conversation.addMessage(new Message(Action.RECEIVE_SMS, phoneNumber, "monDestinataire", "je suis loin " + (int)(1000*Math.random())));
+			conversation.addMessage(new Message(Action.SEND_SMS, phoneNumber, "monDestinataire", "ma réponse débile " + (int)(1000*Math.random())));
+		} // End DEBUG
 		return ok(conversation.getConversationAsJson());
-		// }
-		// return ok("");
 	}
 }

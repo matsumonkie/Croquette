@@ -105,6 +105,7 @@ function foo(element) {
 	alert($(element).attr("title"))
 }
 
+
 /**
  * 
  */
@@ -121,12 +122,14 @@ function loadConversation(element, phoneNumber) {
 	$(element).addClass('active')
 	
 	// retrieve the conversation
-	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) { addConversationToView(conversation) } 
-	).error(function() {
+	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) {
+		clearConversation()
+		addConversationToView(conversation)
+	}).error(function() {
 		alert("error")
 	});
-			
 }
+
 
 function addConversationToView(conversation) {
 	$.each(conversation, function(index, message) {

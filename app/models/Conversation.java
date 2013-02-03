@@ -15,10 +15,12 @@ public class Conversation {
 
 	private Collection<Message> conversation = new ArrayList<Message>();
 
+	
 	public void addMessage(Message message) {
 		conversation.add(message);
 	}
 
+	
 	/**
 	 * create a json object containing a conversation 
 	 */
@@ -32,6 +34,7 @@ public class Conversation {
 
 		return arrayNode;
 	}
+	
 	
 	public boolean isEmpty() {
 		return conversation.isEmpty();
