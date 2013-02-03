@@ -7,7 +7,7 @@ var chatSocket = new WS("@routes.Application.chatSocket().webSocketURL()")
 $(function() {
 	
 	function getSelectedPhoneNumber() {
-		return $("#selectedPhoneNumber").val()
+		return $('li.active').attr("title")
 	}
 	
 	
@@ -30,7 +30,7 @@ $(function() {
 	 */
     $("#talk").keypress(function (key) {
     	if (keyPressedIsReturnKey(key)) {
-    		sendMessage(chatSocket, getMessageToSend())
+    		sendMessage(chatSocket, getMessageToSend(), getSelectedPhoneNumber())
     		emptyTalkTextArea()
     	}
     })

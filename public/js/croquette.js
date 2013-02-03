@@ -8,11 +8,8 @@ var RECEIVE_SMS_ACTION = "receive-sms-action"
  * send a json formatted message with a websocket and add message to the
  * conversation UI
  */
-<<<<<<< HEAD
-var sendMessage = function (websocket, msg) {
-	var activeContact = getCurrentActiveContact()
-
-	if(activeContact == null) {
+var sendMessage = function (websocket, msg, currentRecipient) {
+	if(currentRecipient == null) {
 		return
 	}
 	
@@ -21,32 +18,15 @@ var sendMessage = function (websocket, msg) {
 	var jsonObject = { 
 			content: msg,
 			authorPhoneNumber: "me",
-=======
-var sendMessage = function (websocket, msg, dest) {
-	var now = new Date()
-	var jsonObject = {
-			content: msg,
-			author: null,
-			recipient: dest,
->>>>>>> c169cde0fb296ce753a7f9298586ca516375afe7
 			action: SEND_SMS_ACTION,
-			recipient: activeContact,
+			recipient: currentRecipient,
 			date: now.getHours() + "h" + now.getMinutes()
 	}
 	var jsonMsg = JSON.stringify(jsonObject)		
 	websocket.send(jsonMsg)
 	addMessageToConversation(jsonObject, POSITION_OF_SENDING_MESSAGE)
-	
 }
 
-
-/**
- * return the current contact phone number 
- */
-function getCurrentActiveContact() {
-	return $('li.active').attr("title")
-
-}
 
 /**
  * check if key pressed was the return key
