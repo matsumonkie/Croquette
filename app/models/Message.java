@@ -59,9 +59,8 @@ public class Message {
 		content = jsonNode.findValue("content").getTextValue();
 
 		String action = jsonNode.findValue("action").getTextValue();
-		Logger.info(action);
 		if (action != null) {
-			this.action = Action.fromString("receive-sms-action");
+			this.action = Action.fromString(action);
 		}
 
 		this.date = new DateTime();

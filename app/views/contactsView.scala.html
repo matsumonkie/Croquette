@@ -11,7 +11,7 @@
 		@defining(controllers.Sessions.getUserContacts(userUUID)) { contacts =>
 			@contacts.map { contact =>
 				@contact.getPhoneNumbers().map { phoneNumber => 
-					<li title="@phoneNumber" onClick="loadConversation(this, @phoneNumber)"><a>@contact.getName()</a></li>
+					<li title="@phoneNumber" onClick="loadConversation(this, '@phoneNumber')"><a>@contact.getName()</a></li>
 				}
 			}
 		}

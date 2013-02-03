@@ -1,6 +1,7 @@
 var POSITION_OF_INCOMING_MESSAGE = "left"
 var POSITION_OF_SENDING_MESSAGE = "right" 
 var SEND_SMS_ACTION = "send-sms-action"
+var RECEIVE_SMS_ACTION = "receive-sms-action"
 
 	
 /**
@@ -8,19 +9,35 @@ var SEND_SMS_ACTION = "send-sms-action"
  * conversation UI
  */
 var sendMessage = function (websocket, msg) {
+	var activeContact = getCurrentActiveContact()
+
+	if(activeContact == null) {
+		return
+	}
+	
 	var now = new Date()
+
 	var jsonObject = { 
 			content: msg,
-			author: null,
-			recipient: null,
+			authorPhoneNumber: "me",
 			action: SEND_SMS_ACTION,
+			recipient: activeContact,
 			date: now.getHours() + "h" + now.getMinutes()
 	}
 	var jsonMsg = JSON.stringify( jsonObject )		
 	websocket.send(jsonMsg)
 	addMessageToConversation(jsonObject, POSITION_OF_SENDING_MESSAGE)
+	
 }
 
+
+/**
+ * return the current contact phone number 
+ */
+function getCurrentActiveContact() {
+	return $('li.active').attr("title")
+
+}
 
 /**
  * check if key pressed was the return key
@@ -113,6 +130,9 @@ function loadConversation(element, phoneNumber) {
 	if($(element).hasClass('active')) {
 		return
 	}
+	
+	// clear chat
+	clearConversation()
 	
 	// unhighlight previous contact
 	$('li.active').removeClass('active')

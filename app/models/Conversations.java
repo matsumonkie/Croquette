@@ -17,8 +17,11 @@ public class Conversations {
 		Conversation conv = conversations.get(phoneNumber);
 		if (conv == null) {
 			conv = new Conversation();
+			conversations.put(phoneNumber, conv);
 		}
 		return conv;
 	}
+	
+	public int size() { return conversations.size(); }
 	
 }

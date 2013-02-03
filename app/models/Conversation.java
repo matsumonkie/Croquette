@@ -19,6 +19,9 @@ public class Conversation {
 		conversation.add(message);
 	}
 
+	
+	public int size() { return conversation.size(); }
+
 	/**
 	 * create a json object containing a conversation 
 	 */

@@ -47,9 +47,15 @@ public class Application extends Controller {
 
 						// restore http context
 						Context.current.set(ctx);
-						
+
 						// and save message
-						saveMessageInConversation(newMessage);
+						Message message = new Message(newMessage);
+						if (message.messageToSend()) {
+							UUID userUUID = User.getUserUUID().get();
+							saveMessage(userUUID, message.getRecipient(), message);
+							// and send it with xmpp
+							con.sendMessage(message);
+						}
 					}
 				});
 
@@ -62,29 +68,21 @@ public class Application extends Controller {
 					}
 				});
 
-				handleIncomingMsg(out);
+				handleIncomingSMS(out);
 			}
 
-			private void saveMessageInConversation(JsonNode newMessage) {
-				Message message = new Message(newMessage);
-				
-				if (message.messageToSend()) {
-					UUID userUUID = User.getUserUUID().get();
+			private void saveMessage(UUID userUUID, String contactPhoneNum, Message message) {
+				Conversations conversations = Sessions.getUserConversations(userUUID);
+				Conversation conversation = conversations.getConversation(contactPhoneNum);
 
-					// save message in the conversation
-					Conversations conversations = Sessions.getUserConversations(userUUID);
-					Conversation conversation = conversations.getConversation(message.getRecipient());
-					conversation.addMessage(message);
-					
-					//and send it with xmpp
-					con.sendMessage(message);
-				}
+				conversation.addMessage(message);
+				Logger.info("saving message...");
 			}
 
 			/*
 			 * 
 			 */
-			private void handleIncomingMsg(WebSocket.Out<JsonNode> out) {
+			private void handleIncomingSMS(WebSocket.Out<JsonNode> out) {
 				// restore http context
 				Context.current.set(ctx);
 				UUID userUUID = User.getUserUUID().get();
@@ -93,13 +91,8 @@ public class Application extends Controller {
 				// get the chat so that we can create a xmpp listener
 				Chat chat = con.getChat();
 
-				// on new incoming message, save it and send it to the client
-				saveNewMessage(out, userUUID, chat);
-
-				for (int i = 0; i < 2; i++) {
-					sendMsgTest(con);
-				}
-
+				// on new incoming sms, save it and send it to the client
+				createSMSListener(out, userUUID, chat);
 			}
 
 			/**
@@ -114,28 +107,17 @@ public class Application extends Controller {
 				return connection;
 			}
 
-			private void sendMsgTest(XMPPConnectionHandler con) {
-				Message msg = new Message(Action.RECEIVE_SMS, "064-814-5187", "matsuhar@gmail.com", "coucou");
-				Logger.info("new SMS:" + msg.asJson().toString());
-				con.sendMessage(msg);
-			}
-
 			/**
 			 *  
 			 */
-			private void saveNewMessage(final WebSocket.Out<JsonNode> out, final UUID userUUID, Chat chat) {
+			private void createSMSListener(final WebSocket.Out<JsonNode> out, final UUID userUUID, Chat chat) {
 				chat.addMessageListener(new MessageListener() {
 					@Override
 					public void processMessage(Chat arg0, org.jivesoftware.smack.packet.Message xmppMsg) {
 						Message msg = new Message(xmppMsg);
 						// if message received is originally an sms, handle it!
 						if (msg.isNewIncomingSMS()) {
-							String authorPhoneNumber = msg.getAuthorPhoneNumber();
-							// find corresponding conversation
-							Conversations conversations = Sessions.getUserConversations(userUUID);
-							Conversation conversation = conversations.getConversation(authorPhoneNumber);
-							conversation.addMessage(msg);
-
+							saveMessage(userUUID, msg.getAuthorPhoneNumber(), msg);
 							// finally notify the client a new sms has arrived
 							notifyNewMessage(out, msg);
 						}
@@ -171,13 +153,8 @@ public class Application extends Controller {
 		UUID userUUID = User.getUserUUID().get();
 		Conversations conversations = Sessions.getUserConversations(userUUID);
 		Conversation conversation = conversations.getConversation(phoneNumber);
+		Logger.info(conversations.size() + "");
 
-		// if (!conversation.isEmpty()) {
-		// DEBUG
-		conversation.addMessage(new Message(Action.RECEIVE_SMS, "08899889", "monDestinataire", "je suis loin"));
-		conversation.addMessage(new Message(Action.SEND_SMS, "08899889", "monDestinataire", "test 2"));
 		return ok(conversation.getConversationAsJson());
-		// }
-		// return ok("");
 	}
 }
