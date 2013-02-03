@@ -7,16 +7,16 @@ var SEND_SMS_ACTION = "send-sms-action"
  * send a json formatted message with a websocket and add message to the
  * conversation UI
  */
-var sendMessage = function (websocket, msg) {
+var sendMessage = function (websocket, msg, dest) {
 	var now = new Date()
-	var jsonObject = { 
+	var jsonObject = {
 			content: msg,
 			author: null,
-			recipient: null,
+			recipient: dest,
 			action: SEND_SMS_ACTION,
 			date: now.getHours() + "h" + now.getMinutes()
 	}
-	var jsonMsg = JSON.stringify( jsonObject )		
+	var jsonMsg = JSON.stringify(jsonObject)		
 	websocket.send(jsonMsg)
 	addMessageToConversation(jsonObject, POSITION_OF_SENDING_MESSAGE)
 }
@@ -24,7 +24,7 @@ var sendMessage = function (websocket, msg) {
 
 /**
  * check if key pressed was the return key
- */ 
+ */
 function keyPressedIsReturnKey(key) {
     if (key.charCode == 13 || key.keyCode == 13) {
         key.preventDefault()
@@ -114,6 +114,8 @@ function loadConversation(element, phoneNumber) {
 	if($(element).hasClass('active')) {
 		return
 	}
+	
+	document.getElementById("selectedPhoneNumber").value = phoneNumber
 	
 	// unhighlight previous contact
 	$('li.active').removeClass('active')

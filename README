@@ -2,25 +2,50 @@ Croquette
 =========
 
 
+Réception d'un message XMPP :
+	Serveur :
+		- ajouter dans la conversation
+		- 
+	WebSocket :
+		- envoyer au client
+	JavaScript :
+		- ??? (afficher la vue correspondante ou popup de notification à la "Facebook")
+Envoi d'un message :
+	JavaScript :
+		- vérifier qu'un contact est sélectionné
+		- ajouter dans la vue active
+		- effacer la zone de saisie
+	WebSocket :
+		- envoyer le message au serveur
+	Serveur :
+		- ajouter dans la conversation
+		- envoyer par XMPP
+Mise à jout de la vue :
+	Ajaw :
+		- récupérer la conversation
+	JavaScript :
+		- afficher chaque message de la conversation
+
+
 
 A ajouter :
-    Fonctionnalit�s :
+    Fonctionnalités :
         XMPP :
             Envoi de messages avec GTalk
-            R�ception des messages de GTalk
-        Application :
-            Bouton send
-            Bouton Clear
-        Contact :
-            Changer la vue qui affiche les messages :
-                peut-�tre mettre le num�ro de t�l�phone dans l'URL, genre http://localhost:9000/chat?"0123456789"
-                ensuite la vue charge la conversation
+            Réception des messages de GTalk
+        Notification
     Optimisation :
         L'injection de balises dans le champ texte
+        Contacts :
+        	Lorsque l'on reçoie des SMS de personnes qui ne sont pas dans nos contacts ?
+        	Lors de la réception d'un SMS :
+        		Mettre le contact en 1ère position
+        		Rafraichir la liste des contacts
+        		Lorsque le SMS est lu retirer "normalement"
     Optionnels :
     	Lors de la réception de messages :
 	    	Son d'alerte
     		Alerte dans le titre de l'onglet
         Fonction search 
-        Logo "Google" en haut � droite
-        Syst�me qui vide la m�moire "Session" au bout d'un certain temps d'inactivit�
+        Logo "Google" en haut à droite
+        Système qui vide la mémoire "Session" au bout d'un certain temps d'inactivité
