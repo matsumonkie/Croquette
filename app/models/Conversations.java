@@ -13,6 +13,7 @@ public class Conversations {
 	// associate a phone number to a conversation
 	private Map<String, Conversation> conversations = new HashMap<String, Conversation>();
 	
+	
 	public Conversation getConversation(String phoneNumber) {
 		Conversation conv = conversations.get(phoneNumber);
 		if (conv == null) {
@@ -21,7 +22,5 @@ public class Conversations {
 		}
 		return conv;
 	}
-	
-	public int size() { return conversations.size(); }
 	
 }

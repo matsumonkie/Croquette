@@ -6,6 +6,10 @@ var chatSocket = new WS("@routes.Application.chatSocket().webSocketURL()")
 
 $(function() {
 	
+	function getSelectedPhoneNumber() {
+		return $("#selectedPhoneNumber").val()
+	}
+	
 	
 	/**
 	 * return the message in the text area formatted as json
@@ -36,7 +40,15 @@ $(function() {
 	 * send a message when clicking the "send" button 
 	 */
 	$(".sendButton").click(function() {
-		sendMessage(chatSocket, getMessageToSend())
+		if (getMessageToSend() == "") {
+			alert("Saisissez un message")
+			return
+		}
+		if (getSelectedPhoneNumber() == "") {
+			alert("Sélectionnez un contact")
+			return
+		}
+		sendMessage(chatSocket, getMessageToSend(), getSelectedPhoneNumber())
 		emptyTalkTextArea()
 	});
 		

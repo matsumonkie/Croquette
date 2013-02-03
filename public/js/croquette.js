@@ -8,6 +8,7 @@ var RECEIVE_SMS_ACTION = "receive-sms-action"
  * send a json formatted message with a websocket and add message to the
  * conversation UI
  */
+<<<<<<< HEAD
 var sendMessage = function (websocket, msg) {
 	var activeContact = getCurrentActiveContact()
 
@@ -20,11 +21,19 @@ var sendMessage = function (websocket, msg) {
 	var jsonObject = { 
 			content: msg,
 			authorPhoneNumber: "me",
+=======
+var sendMessage = function (websocket, msg, dest) {
+	var now = new Date()
+	var jsonObject = {
+			content: msg,
+			author: null,
+			recipient: dest,
+>>>>>>> c169cde0fb296ce753a7f9298586ca516375afe7
 			action: SEND_SMS_ACTION,
 			recipient: activeContact,
 			date: now.getHours() + "h" + now.getMinutes()
 	}
-	var jsonMsg = JSON.stringify( jsonObject )		
+	var jsonMsg = JSON.stringify(jsonObject)		
 	websocket.send(jsonMsg)
 	addMessageToConversation(jsonObject, POSITION_OF_SENDING_MESSAGE)
 	
@@ -41,7 +50,7 @@ function getCurrentActiveContact() {
 
 /**
  * check if key pressed was the return key
- */ 
+ */
 function keyPressedIsReturnKey(key) {
     if (key.charCode == 13 || key.keyCode == 13) {
         key.preventDefault()
@@ -122,6 +131,7 @@ function foo(element) {
 	alert($(element).attr("title"))
 }
 
+
 /**
  * 
  */
@@ -141,12 +151,14 @@ function loadConversation(element, phoneNumber) {
 	$(element).addClass('active')
 	
 	// retrieve the conversation
-	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) { addConversationToView(conversation) } 
-	).error(function() {
+	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) {
+		clearConversation()
+		addConversationToView(conversation)
+	}).error(function() {
 		alert("error")
 	});
-			
 }
+
 
 function addConversationToView(conversation) {
 	$.each(conversation, function(index, message) {
