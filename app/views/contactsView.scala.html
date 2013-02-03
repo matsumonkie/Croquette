@@ -6,12 +6,14 @@
 		<input id="appendedInputButton" type="text" style="width:175px">
 		<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
 	</div>
-	
+
+	<button title="test" onclick="foo(this)">Try it</button>
+
 	@defining(controllers.User.getUserUUID().get()) { userUUID =>
 		@defining(controllers.Sessions.getUserContacts(userUUID)) { contacts =>
 			@contacts.map { contact =>
 				@contact.getPhoneNumbers().map { phoneNumber => 
-					<li title="@phoneNumber" onClick="choixContact('@phoneNumber')"><a>@contact.getName()</a></li>
+					<li title="@phoneNumber" onClick="loadConversation(this, @phoneNumber)"><a>@contact.getName()</a></li>
 				}
 			}
 		}

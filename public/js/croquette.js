@@ -1,8 +1,11 @@
 var POSITION_OF_INCOMING_MESSAGE = "left"
 var POSITION_OF_SENDING_MESSAGE = "right" 
 var SEND_SMS_ACTION = "send-sms-action"
+
+	
 /**
- * send a json formatted message with a websocket and add message to the conversation UI 
+ * send a json formatted message with a websocket and add message to the
+ * conversation UI
  */
 var sendMessage = function (websocket, msg) {
 	var now = new Date()
@@ -32,7 +35,7 @@ function keyPressedIsReturnKey(key) {
 
 
 /**
- * add the incoming message to the chat  
+ * add the incoming message to the chat
  */
 function handleIncomingMessage(event) {
 	var message = JSON.parse(event.data)
@@ -47,7 +50,7 @@ function handleIncomingMessage(event) {
 
 
 /**
- * add a message to the conversation UI  
+ * add a message to the conversation UI
  */
 function addMessageToConversation(jsonMsg, position) {
 	// create the message element
@@ -68,8 +71,8 @@ function addMessageToConversation(jsonMsg, position) {
 
 
 /**
- * create a dom containing the message positioned either on the left or on the right
- * depending on who is the author 
+ * create a dom containing the message positioned either on the left or on the
+ * right depending on who is the author
  */
 function createArrowBox(jsonMsg, position) {
 	var message = new Array()
@@ -98,16 +101,39 @@ function clearConversation() {
 }
 
 
-function choixContact(phoneNumber) {
-	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {},
-			function(conversation) {
-				$.each(conversation.messages, function(index, message) {
-					// if (message.send)
-					// alert("Droite : " + message.text)
-					// else
-					// alert("Gauche : " + message.text)
-				})
-			}).error(function() {
-		alert("error");
-	}) // DEBUG
+function foo(element) {
+	alert($(element).attr("title"))
+}
+
+/**
+ * 
+ */
+function loadConversation(element, phoneNumber) {
+	// conversation is already loaded
+	if($(element).hasClass('active')) {
+		return
+	}
+	
+	// unhighlight previous contact
+	$('li.active').removeClass('active')
+	
+	// highlight current contact
+	$(element).addClass('active')
+	
+	// retrieve the conversation
+	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) { addConversationToView(conversation) } 
+	).error(function() {
+		alert("error")
+	});
+			
+}
+
+function addConversationToView(conversation) {
+	$.each(conversation, function(index, message) {
+		if (message.action == SEND_SMS_ACTION) {
+			addMessageToConversation(message, POSITION_OF_SENDING_MESSAGE)
+		} else {
+			addMessageToConversation(message, POSITION_OF_INCOMING_MESSAGE)
+		}
+	})
 }
