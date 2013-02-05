@@ -56,7 +56,16 @@ $(function() {
     /**
      * handle every message received with the websocket 
      */
-	chatSocket.onmessage = handleIncomingMessage    
+	chatSocket.onmessage = function(msg) {
+		handleIncomingMessage(msg)
+		notifyUser(message)
+		notifyUser(message)
+		
+	}
+
+	function notifyUser(message) {
+		alert("coucou")
+	}
 
 			
 	/**

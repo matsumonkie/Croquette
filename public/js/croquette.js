@@ -41,7 +41,7 @@ function keyPressedIsReturnKey(key) {
 
 
 /**
- * add the incoming message to the chat
+ * add the incoming message to the chat and notify the user
  */
 function handleIncomingMessage(event) {
 	var message = JSON.parse(event.data)
