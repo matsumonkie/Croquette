@@ -41,21 +41,6 @@ function keyPressedIsReturnKey(key) {
 
 
 /**
- * add the incoming message to the chat and notify the user
- */
-function handleIncomingMessage(event) {
-	var message = JSON.parse(event.data)
-
-    if (message.error) {
-        chatSocket.close()
-        return
-    } else if (message) {
-    	addMessageToConversation(message, POSITION_OF_INCOMING_MESSAGE)
-    }
-}
-
-
-/**
  * add a message to the conversation UI
  */
 function addMessageToConversation(jsonMsg, position) {

@@ -19,6 +19,10 @@
   border-radius: 6px;
 }
 
+ul {
+	list-style-type: none;
+}
+
 .left_arrow_box {
 	position: relative;
  	display: inline-block;

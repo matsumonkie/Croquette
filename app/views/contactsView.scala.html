@@ -9,6 +9,7 @@
 		<button class="btn" type="button"><i class="icon-user"> </i> Search</button>
 	</div>
 
+	<ul class="nav nav-pills nav-stacked>
 	@defining(controllers.User.getUserUUID().get()) { userUUID =>
 		@defining(controllers.Sessions.getUserContacts(userUUID)) { contacts =>
 			@contacts.map { contact =>
@@ -18,5 +19,6 @@
 			}
 		}
 	}
+	</ul>
 	
 </ul>

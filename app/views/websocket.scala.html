@@ -54,17 +54,25 @@ $(function() {
 		
     
     /**
-     * handle every message received with the websocket 
+     * handle every message received with the websocket
      */
-	chatSocket.onmessage = function(msg) {
-		handleIncomingMessage(msg)
-		notifyUser(message)
-		notifyUser(message)
-		
+	chatSocket.onmessage = function(event) {
+		var msg = JSON.parse(event.data)
+		if (msg.error) {
+			return
+		} else {
+			addMessageToConversation(msg, POSITION_OF_INCOMING_MESSAGE)
+			notifyUser(msg)
+		}
 	}
 
-	function notifyUser(message) {
-		alert("coucou")
+	function notifyUser(msg) {
+		var phoneNum = msg.authorPhoneNumber
+		var contactToNotify = $('li[title=' + phoneNum + ']')
+		if (contactToNotify) {
+			var notification = '<span style="margin-right: 10px" class="badge badge-success">2</span>'
+			contactToNotify.children().before(notification)
+		}
 	}
 
 			
