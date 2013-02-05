@@ -3890,13 +3890,16 @@ input[type="submit"].btn.btn-mini {
 }
 
 .nav {
-  margin-bottom: 20px;
   margin-left: 0;
   list-style: none;
 }
 
+.nav > li {
+  margin-bottom:10px;
+}
+
 .nav > li > a {
-  display: block;
+  display: inline;
 }
 
 .nav > li > a:hover {
@@ -4030,8 +4033,8 @@ input[type="submit"].btn.btn-mini {
 }
 
 .nav-pills > li > a {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   margin-top: 2px;
   margin-bottom: 2px;
   -webkit-border-radius: 5px;

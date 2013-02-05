@@ -106,6 +106,9 @@ function loadConversation(element, phoneNumber) {
 		return
 	}
 	
+	// clear notification
+	$(element).find('span').remove()
+	
 	// clear chat
 	clearConversation()
 	

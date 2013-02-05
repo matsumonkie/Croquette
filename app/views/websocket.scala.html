@@ -70,7 +70,11 @@ $(function() {
 		var phoneNum = msg.authorPhoneNumber
 		var contactToNotify = $('li[title=' + phoneNum + ']')
 		if (contactToNotify) {
-			var notification = '<span style="margin-right: 10px" class="badge badge-success">2</span>'
+			// find how many notification already present
+			var nbNotifications = contactToNotify.find('span').text()
+			if (!nbNotifications) nbNotifications = 0
+			// add notification
+			var notification = '<span style="margin-right: 10px" class="badge badge-success">' + parseInt(nbNotifications + 1) + '</span>'
 			contactToNotify.children().before(notification)
 		}
 	}
