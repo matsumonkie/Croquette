@@ -62,7 +62,7 @@ public class Message {
 		if (action != null) {
 			this.action = Action.fromString(action);
 		}
-
+		Logger.info("nom message : "+jsonNode);
 		this.date = new DateTime();
 	}
 

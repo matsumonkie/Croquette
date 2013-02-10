@@ -101,7 +101,7 @@ public class Application extends Controller {
 			}
 
 			private void sendMsgTest(XMPPConnectionHandler con) {
-				Message msg = new Message(Action.RECEIVE_SMS, "0648145187", "matsuhar@gmail.com", "coucou");
+				Message msg = new Message(Action.RECEIVE_SMS, "0648145187", "matsuhar@gmail.com", "Application.WebSocket.sendMsgTest : debug SMS");
 				Logger.info("new SMS:" + msg.asJson().toString());
 				con.sendMessage(msg);
 			}
