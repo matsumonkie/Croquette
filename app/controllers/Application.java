@@ -95,7 +95,7 @@ public class Application extends Controller {
 				// on new incoming sms, save it and send it to the client
 				createSMSListener(out, userUUID, chat);
 				
-				for (int i = 0; i < 1; i++) {
+				for (int i = 0; i < 3; i++) {
 					sendMsgTest(con);
 				}
 			}
