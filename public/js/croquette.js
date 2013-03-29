@@ -120,11 +120,10 @@ function loadConversation(element, phoneNumber) {
 	
 	// retrieve the conversation
 	$.getJSON("/getConversationAjax?phoneNumber=" + phoneNumber, {}, function(conversation) {
-		clearConversation()
 		addConversationToView(conversation)
 	}).error(function() {
 		alert("error")
-	});
+	})
 }
 
 
