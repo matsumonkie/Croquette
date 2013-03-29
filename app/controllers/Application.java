@@ -5,7 +5,7 @@ import java.util.UUID;
 import models.Conversation;
 import models.Conversations;
 import models.Message;
-import models.Message.Action;
+import models.Action;
 
 import org.codehaus.jackson.JsonNode;
 import org.jivesoftware.smack.Chat;
@@ -44,8 +44,6 @@ public class Application extends Controller {
 
 				in.onMessage(new Callback<JsonNode>() {
 					public void invoke(JsonNode newMessage) {
-						Logger.info(" -> New SMS : " + newMessage);
-
 						// restore http context
 						Context.current.set(ctx);
 
@@ -55,6 +53,7 @@ public class Application extends Controller {
 							UUID userUUID = User.getUserUUID().get();
 							saveMessage(userUUID, message.getRecipient(), message);
 							// and send it with xmpp
+							Logger.info(" sending new SMS [" + newMessage + "]");
 							con.sendMessage(message);
 						}
 					}

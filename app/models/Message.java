@@ -16,30 +16,6 @@ import play.libs.Json;
  */
 public class Message {
 
-	public enum Action {
-		SEND_SMS("send-sms-action"), RECEIVE_SMS("receive-sms-action");
-
-		private final String text;
-
-		private Action(String text) {
-			this.text = text;
-		}
-
-		public String getText() {
-			return text;
-		}
-
-		public static Action fromString(String text) {
-			if (text != null) {
-				for (Action action : Action.values()) {
-					if (text.equals(action.text))
-						return action;
-				}
-			}
-			return null;
-		}
-	}
-
 	private String authorPhoneNumber;
 	private String recipient;
 	private String content;
@@ -78,11 +54,11 @@ public class Message {
 	 * check wether the xmpp message is wrapping an sms
 	 */
 	public boolean isNewIncomingSMS() {
-		return (action == models.Message.Action.RECEIVE_SMS);
+		return (action == models.Action.RECEIVE_SMS);
 	}
 
 	public boolean messageToSend() {
-		return (action == models.Message.Action.SEND_SMS);
+		return (action == models.Action.SEND_SMS);
 	}
 	
 	public String getAuthorPhoneNumber() {

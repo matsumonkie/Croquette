@@ -30,24 +30,18 @@ import com.typesafe.config.ConfigFactory;
 
 public class XMPPConnectionHandler {
 
-	private String accessToken;
-	private String login;
+	private final String SERVER = "gmail.com";
 	private final String SERVICE = "talk.google.com";
 	private final int PORT = 5222;
-	private final String SERVER = "gmail.com";
+	
 	private XMPPConnection client;
 	private Chat chat = null;
-	// Create a packet filter to listen for new messages from a particular
-	// user. We use an AndFilter to combine two other filters.
-	private PacketFilter filter;
 
+	private String accessToken;
+	private String login;
+	
 	private static final Config conf = ConfigFactory.load();
 	private static final boolean XMPP_DEBUG_ENABLE = conf.getBoolean("xmpp_debug_enable");
-
-	public XMPPConnectionHandler(String login, String accessToken) {
-		this.login = login;
-		this.accessToken = accessToken;
-	}
 
 	// register Google sasl mechanism and use it as default SASL mechanism for
 	// every authentication
@@ -55,6 +49,11 @@ public class XMPPConnectionHandler {
 		SASLAuthentication.registerSASLMechanism(GoogleOAuth2SASLMechanism.GOOGLE_SASL_MECHANISM, GoogleOAuth2SASLMechanism.class);
 		// 0 means google sasl mechanism is the prefered one
 		SASLAuthentication.supportSASLMechanism(GoogleOAuth2SASLMechanism.GOOGLE_SASL_MECHANISM, 0);
+	}
+	
+	public XMPPConnectionHandler(String login, String accessToken) {
+		this.login = login;
+		this.accessToken = accessToken;
 	}
 
 	/**
@@ -87,7 +86,7 @@ public class XMPPConnectionHandler {
 	 * incoming message
 	 */
 	public void init() {
-		setAuthenticationConf();
+		authenticate();
 		setPresenceAvailable();
 		createChat();
 	}
@@ -105,7 +104,7 @@ public class XMPPConnectionHandler {
 	 * set the configuration for authentication, we will use gtalk with SASL
 	 * authentication
 	 */
-	public void setAuthenticationConf() {
+	public void authenticate() {
 		ConnectionConfiguration config = new ConnectionConfiguration(SERVICE, PORT, SERVER);
 		config.setDebuggerEnabled(XMPP_DEBUG_ENABLE);
 		// gtalk is using SASL authentication
